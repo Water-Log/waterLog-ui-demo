@@ -2,9 +2,14 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { countries } from "@/lib/mock-data"
 
 // Icons
 import { User, Building2, ChevronLeft, ChevronRight } from "lucide-react"
@@ -12,8 +17,24 @@ import { User, Building2, ChevronLeft, ChevronRight } from "lucide-react"
 export default function RegisterPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [accountType, setAccountType] = useState<"personal" | "business" | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState("")
+  const [companyName, setCompanyName] = useState("")
+  const [companyEmail, setCompanyEmail] = useState("")
+  const [taxNumber, setTaxNumber] = useState("")
+  const [taxOffice, setTaxOffice] = useState("")
+  const [billingAddress, setBillingAddress] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [name, setName] = useState("")
+  const [surname, setSurname] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
   
   const totalSteps = 4
+  
+  const getSelectedCountryPhoneCode = () => {
+    const country = countries.find(c => c.value === selectedCountry)
+    return country ? country.phoneCode : "+1"
+  }
   
   const handleNext = () => {
     if (currentStep < totalSteps) {
@@ -66,15 +87,15 @@ export default function RegisterPage() {
             />
             <StepIndicator 
               number={2} 
-              title="Detailed Information"
-              subtitle="Additional information"
+              title="Country Selection"
+              subtitle="Select your country"
               isActive={currentStep === 2}
               isCompleted={currentStep > 2}
             />
             <StepIndicator 
               number={3} 
-              title="Account Information"
-              subtitle="Your login credentials"
+              title="Company Information"
+              subtitle="Your company details"
               isActive={currentStep === 3}
               isCompleted={currentStep > 3}
             />
@@ -140,6 +161,152 @@ export default function RegisterPage() {
             </div>
           )}
           
+          {currentStep === 2 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Country Selection</h2>
+              <p className="text-gray-600 mb-8">Please select your country</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="country">Country</Label>
+                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.value} value={country.value}>
+                          {country.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {currentStep === 3 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Company Information</h2>
+              <p className="text-gray-600 mb-8">Please enter your company details.</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="companyName">Company Name</Label>
+                  <Input 
+                    id="companyName" 
+                    placeholder="Your Company LLC" 
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="companyEmail">Company Email Address</Label>
+                  <Input 
+                    id="companyEmail" 
+                    type="email"
+                    placeholder="info@yourcompany.com" 
+                    value={companyEmail}
+                    onChange={(e) => setCompanyEmail(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="taxNumber">Tax Number</Label>
+                  <Input 
+                    id="taxNumber" 
+                    placeholder="1234567890" 
+                    value={taxNumber}
+                    onChange={(e) => setTaxNumber(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="taxOffice">Tax Office</Label>
+                  <Input 
+                    id="taxOffice" 
+                    placeholder="Your City Tax Office" 
+                    value={taxOffice}
+                    onChange={(e) => setTaxOffice(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="billingAddress">Billing Address</Label>
+                  <Textarea 
+                    id="billingAddress" 
+                    placeholder="123 Main St, Anytown, USA"
+                    value={billingAddress}
+                    onChange={(e) => setBillingAddress(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {currentStep === 4 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Login Information</h2>
+              <p className="text-gray-600 mb-8">Please enter your account details.</p>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Name</Label>
+                    <Input 
+                      id="name" 
+                      placeholder="John" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="surname">Surname</Label>
+                    <Input 
+                      id="surname" 
+                      placeholder="Doe" 
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input 
+                    id="email" 
+                    type="email"
+                    placeholder="john.doe@example.com" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <Input 
+                    id="password" 
+                    type="password"
+                    placeholder="Enter your password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <div className="flex">
+                    <div className="flex items-center bg-gray-50 border border-r-0 border-gray-300 rounded-l-md px-3 py-2 text-gray-500 text-sm">
+                      {getSelectedCountryPhoneCode()}
+                    </div>
+                    <Input 
+                      id="phoneNumber" 
+                      placeholder="555 123 4567"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="rounded-l-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Navigation buttons */}
           <div className="mt-12 flex justify-between">
             <Button 
@@ -163,10 +330,16 @@ export default function RegisterPage() {
             
             <Button 
               onClick={handleNext}
-              disabled={!accountType || currentStep === totalSteps}
+              disabled={
+                (currentStep === 1 && !accountType) ||
+                (currentStep === 2 && !selectedCountry) ||
+                (currentStep === 3 && (!companyName || !companyEmail || !taxNumber || !taxOffice || !billingAddress)) ||
+                (currentStep === 4 && (!email || !password || !name || !surname || !phoneNumber)) ||
+                currentStep === totalSteps
+              }
               className="bg-green-500 hover:bg-green-600 text-white"
             >
-              Continue
+              {currentStep === totalSteps ? "Complete Registration" : "Continue"}
             </Button>
           </div>
         </div>
@@ -204,4 +377,4 @@ function StepIndicator({
       </div>
     </div>
   )
-} 
+}
