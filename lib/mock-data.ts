@@ -413,6 +413,127 @@ export const waterAnalysisData = {
   }
 }
 
+// Companies data
+export const companies = [
+  {
+    id: "comp-1",
+    name: "Maritime Global Corp",
+    type: "Shipping Company",
+    headquarters: "Singapore",
+    established: "1995",
+    employees: 2500,
+    description: "Leading international shipping and logistics company"
+  },
+  {
+    id: "comp-2",
+    name: "Ocean Tech Solutions",
+    type: "Technical Services",
+    headquarters: "Rotterdam",
+    established: "2008",
+    employees: 450,
+    description: "Maritime technical services and water analysis specialists"
+  },
+  {
+    id: "comp-3",
+    name: "Atlantic Shipping Ltd",
+    type: "Fleet Management",
+    headquarters: "Hamburg",
+    established: "1987",
+    employees: 850,
+    description: "European fleet management and ship operations"
+  }
+]
+
+// Users data with roles
+export const users = [
+  {
+    id: "user-1",
+    name: "John Doe",
+    email: "john.doe@maritimeglobal.com",
+    role: "Manager",
+    companyId: "comp-1",
+    avatar: "/placeholder-user.jpg",
+    joinDate: "2022-03-15",
+    status: "Active"
+  },
+  {
+    id: "user-2",
+    name: "Sarah Johnson",
+    email: "sarah.johnson@maritimeglobal.com",
+    role: "Shipowner",
+    companyId: "comp-1",
+    avatar: "/placeholder-user.jpg",
+    joinDate: "2023-02-15",
+    status: "Active"
+  },
+  {
+    id: "user-3",
+    name: "Mike Anderson",
+    email: "mike.anderson@oceantech.com",
+    role: "Technician",
+    companyId: "comp-2",
+    avatar: "/placeholder-user.jpg",
+    joinDate: "2023-08-20",
+    status: "Active"
+  },
+  {
+    id: "user-4",
+    name: "Hans Mueller",
+    email: "hans.mueller@atlanticshipping.com",
+    role: "Manager",
+    companyId: "comp-3",
+    avatar: "/placeholder-user.jpg",
+    joinDate: "2022-08-25",
+    status: "Active"
+  },
+  {
+    id: "user-5",
+    name: "Emma Thompson",
+    email: "emma.thompson@oceantech.com",
+    role: "Technician",
+    companyId: "comp-2",
+    avatar: "/placeholder-user.jpg",
+    joinDate: "2023-11-10",
+    status: "Active"
+  },
+  {
+    id: "user-6",
+    name: "Giuseppe Romano",
+    email: "giuseppe.romano@maritimeglobal.com",
+    role: "Shipowner",
+    companyId: "comp-1",
+    avatar: "/placeholder-user.jpg",
+    joinDate: "2024-01-15",
+    status: "Active"
+  }
+]
+
+// Current user (this would normally come from authentication)
+export const currentUser = users[0] // John Doe - Manager
+
+// Helper functions
+export const getUserById = (userId: string) => {
+  return users.find(user => user.id === userId)
+}
+
+export const getCompanyById = (companyId: string) => {
+  return companies.find(company => company.id === companyId)
+}
+
+export const getCurrentUserWithCompany = () => {
+  const user = currentUser
+  const company = getCompanyById(user.companyId)
+  return { user, company }
+}
+
+export const getUsersByCompany = (companyId: string) => {
+  return users.filter(user => user.companyId === companyId)
+}
+
+export const getUsersByRole = (role: string) => {
+  return users.filter(user => user.role === role)
+}
+
 // Helper function to calculate fleet water analysis summary
 export const getFleetWaterAnalysisSummary = (fleetId: string) => {
   const fleetShips = Object.values(waterAnalysisData).filter(data => data.fleetId === fleetId)
@@ -472,4 +593,22 @@ export const getFleetByShip = (shipId: string) => {
   const ship = ships.find(s => s.id === shipId)
   if (!ship) return null
   return fleets.find(f => f.id === ship.fleetId) || null
+}
+
+// Function to switch current user (for testing different roles)
+export const switchCurrentUser = (userId: string) => {
+  const user = getUserById(userId)
+  if (user) {
+    // In a real app, this would update authentication state
+    // For now, we'll just export a reference
+    return user
+  }
+  return currentUser
+}
+
+// Helper to get users by role for easy testing
+export const testUsers = {
+  manager: users.find(u => u.role === "Manager"),
+  shipowner: users.find(u => u.role === "Shipowner"), 
+  technician: users.find(u => u.role === "Technician")
 }

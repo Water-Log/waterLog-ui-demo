@@ -1,11 +1,13 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { 
   Building2, 
   CheckCircle, 
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Plus
 } from "lucide-react"
 import { fleets, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
 import { FleetCard } from "@/app/_components/fleet-card"
@@ -33,11 +35,17 @@ export default function FleetsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Fleet Water Analysis</h1>
-        <p className="text-muted-foreground">
-          Monitor cooling water analysis across all fleets for optimal ship performance
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Fleet Water Analysis</h1>
+          <p className="text-muted-foreground">
+            Monitor cooling water analysis across all fleets for optimal ship performance
+          </p>
+        </div>
+        <Button className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add Fleet
+        </Button>
       </div>
 
       {/* Fleet Overview Stats */}
