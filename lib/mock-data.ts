@@ -413,6 +413,388 @@ export const waterAnalysisData = {
   }
 }
 
+// Historical water analysis data for analytics
+export const historicalWaterAnalysisData = {
+  "1": { // MV Atlantic Pioneer
+    shipId: "1",
+    shipName: "MV Atlantic Pioneer",
+    fleetId: "1",
+    history: [
+      {
+        date: "2024-07-01",
+        nitrite: 1100,
+        chloride: 45,
+        pH: 9.1,
+        totalHardness: 125,
+        status: "Good"
+      },
+      {
+        date: "2024-07-03",
+        nitrite: 1150,
+        chloride: 42,
+        pH: 9.0,
+        totalHardness: 122,
+        status: "Good"
+      },
+      {
+        date: "2024-07-05",
+        nitrite: 1180,
+        chloride: 38,
+        pH: 9.2,
+        totalHardness: 118,
+        status: "Good"
+      },
+      {
+        date: "2024-07-07",
+        nitrite: 1200,
+        chloride: 40,
+        pH: 9.3,
+        totalHardness: 120,
+        status: "Good"
+      },
+      {
+        date: "2024-07-10",
+        nitrite: 1220,
+        chloride: 43,
+        pH: 9.1,
+        totalHardness: 123,
+        status: "Good"
+      },
+      {
+        date: "2024-07-12",
+        nitrite: 1190,
+        chloride: 41,
+        pH: 9.2,
+        totalHardness: 119,
+        status: "Good"
+      },
+      {
+        date: "2024-07-14",
+        nitrite: 1200,
+        chloride: 40,
+        pH: 9.2,
+        totalHardness: 120,
+        status: "Good"
+      }
+    ]
+  },
+  "2": { // MV Mediterranean Star
+    shipId: "2",
+    shipName: "MV Mediterranean Star",
+    fleetId: "2",
+    history: [
+      {
+        date: "2024-07-01",
+        nitrite: 1800,
+        chloride: 35,
+        pH: 9.5,
+        totalHardness: 140,
+        status: "Good"
+      },
+      {
+        date: "2024-07-03",
+        nitrite: 2100,
+        chloride: 48,
+        pH: 9.8,
+        totalHardness: 155,
+        status: "Good"
+      },
+      {
+        date: "2024-07-05",
+        nitrite: 2400,
+        chloride: 55,
+        pH: 10.2,
+        totalHardness: 165,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-07",
+        nitrite: 2600,
+        chloride: 68,
+        pH: 10.5,
+        totalHardness: 175,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-10",
+        nitrite: 2750,
+        chloride: 78,
+        pH: 10.8,
+        totalHardness: 182,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-12",
+        nitrite: 2800,
+        chloride: 82,
+        pH: 11.0,
+        totalHardness: 188,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-14",
+        nitrite: 2800,
+        chloride: 85,
+        pH: 11.2,
+        totalHardness: 190,
+        status: "Attention"
+      }
+    ]
+  },
+  "3": { // MV Baltic Explorer
+    shipId: "3",
+    shipName: "MV Baltic Explorer",
+    fleetId: "2",
+    history: [
+      {
+        date: "2024-07-01",
+        nitrite: 1500,
+        chloride: 30,
+        pH: 9.0,
+        totalHardness: 160,
+        status: "Good"
+      },
+      {
+        date: "2024-07-03",
+        nitrite: 1200,
+        chloride: 45,
+        pH: 8.8,
+        totalHardness: 170,
+        status: "Good"
+      },
+      {
+        date: "2024-07-05",
+        nitrite: 1000,
+        chloride: 65,
+        pH: 8.5,
+        totalHardness: 185,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-07",
+        nitrite: 950,
+        chloride: 85,
+        pH: 8.2,
+        totalHardness: 200,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-10",
+        nitrite: 850,
+        chloride: 105,
+        pH: 8.0,
+        totalHardness: 210,
+        status: "Critical"
+      },
+      {
+        date: "2024-07-12",
+        nitrite: 820,
+        chloride: 115,
+        pH: 7.9,
+        totalHardness: 215,
+        status: "Critical"
+      },
+      {
+        date: "2024-07-13",
+        nitrite: 800,
+        chloride: 120,
+        pH: 7.8,
+        totalHardness: 220,
+        status: "Critical"
+      }
+    ]
+  },
+  "4": { // MV Pacific Voyager
+    shipId: "4",
+    shipName: "MV Pacific Voyager",
+    fleetId: "1",
+    history: [
+      {
+        date: "2024-07-01",
+        nitrite: 1600,
+        chloride: 32,
+        pH: 9.3,
+        totalHardness: 135,
+        status: "Good"
+      },
+      {
+        date: "2024-07-03",
+        nitrite: 1650,
+        chloride: 30,
+        pH: 9.4,
+        totalHardness: 138,
+        status: "Good"
+      },
+      {
+        date: "2024-07-05",
+        nitrite: 1700,
+        chloride: 33,
+        pH: 9.5,
+        totalHardness: 142,
+        status: "Good"
+      },
+      {
+        date: "2024-07-07",
+        nitrite: 1750,
+        chloride: 35,
+        pH: 9.4,
+        totalHardness: 145,
+        status: "Good"
+      },
+      {
+        date: "2024-07-10",
+        nitrite: 1780,
+        chloride: 36,
+        pH: 9.5,
+        totalHardness: 143,
+        status: "Good"
+      },
+      {
+        date: "2024-07-12",
+        nitrite: 1790,
+        chloride: 34,
+        pH: 9.4,
+        totalHardness: 141,
+        status: "Good"
+      },
+      {
+        date: "2024-07-14",
+        nitrite: 1800,
+        chloride: 35,
+        pH: 9.5,
+        totalHardness: 140,
+        status: "Good"
+      }
+    ]
+  },
+  "5": { // MV Arctic Breaker
+    shipId: "5",
+    shipName: "MV Arctic Breaker",
+    fleetId: "3",
+    history: [
+      {
+        date: "2024-07-01",
+        nitrite: 2000,
+        chloride: 40,
+        pH: 9.8,
+        totalHardness: 165,
+        status: "Good"
+      },
+      {
+        date: "2024-07-03",
+        nitrite: 2100,
+        chloride: 45,
+        pH: 9.9,
+        totalHardness: 168,
+        status: "Good"
+      },
+      {
+        date: "2024-07-05",
+        nitrite: 2150,
+        chloride: 52,
+        pH: 10.0,
+        totalHardness: 170,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-07",
+        nitrite: 2180,
+        chloride: 58,
+        pH: 10.2,
+        totalHardness: 172,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-10",
+        nitrite: 2200,
+        chloride: 62,
+        pH: 10.3,
+        totalHardness: 174,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-12",
+        nitrite: 2220,
+        chloride: 64,
+        pH: 10.4,
+        totalHardness: 175,
+        status: "Attention"
+      },
+      {
+        date: "2024-07-14",
+        nitrite: 2200,
+        chloride: 65,
+        pH: 10.5,
+        totalHardness: 175,
+        status: "Attention"
+      }
+    ]
+  },
+  "6": { // MV Indian Ocean
+    shipId: "6",
+    shipName: "MV Indian Ocean",
+    fleetId: "4",
+    history: [
+      {
+        date: "2024-07-01",
+        nitrite: 1400,
+        chloride: 38,
+        pH: 8.8,
+        totalHardness: 150,
+        status: "Good"
+      },
+      {
+        date: "2024-07-03",
+        nitrite: 1450,
+        chloride: 40,
+        pH: 8.9,
+        totalHardness: 152,
+        status: "Good"
+      },
+      {
+        date: "2024-07-05",
+        nitrite: 1480,
+        chloride: 41,
+        pH: 9.0,
+        totalHardness: 154,
+        status: "Good"
+      },
+      {
+        date: "2024-07-07",
+        nitrite: 1490,
+        chloride: 42,
+        pH: 9.0,
+        totalHardness: 155,
+        status: "Good"
+      },
+      {
+        date: "2024-07-10",
+        nitrite: 1500,
+        chloride: 43,
+        pH: 9.0,
+        totalHardness: 156,
+        status: "Good"
+      },
+      {
+        date: "2024-07-12",
+        nitrite: 1500,
+        chloride: 42,
+        pH: 9.0,
+        totalHardness: 155,
+        status: "Good"
+      },
+      {
+        date: "2024-07-14",
+        nitrite: 1500,
+        chloride: 42,
+        pH: 9.0,
+        totalHardness: 155,
+        status: "Good"
+      }
+    ]
+  }
+}
+
 // Companies data
 export const companies = [
   {
@@ -611,4 +993,66 @@ export const testUsers = {
   manager: users.find(u => u.role === "Manager"),
   shipowner: users.find(u => u.role === "Shipowner"), 
   technician: users.find(u => u.role === "Technician")
+}
+
+// Helper function to get fleet historical data
+export const getFleetHistoricalData = (fleetId: string) => {
+  const fleetShips = Object.values(historicalWaterAnalysisData).filter(data => data.fleetId === fleetId)
+  return fleetShips
+}
+
+// Helper function to get aggregated fleet trends
+export const getFleetTrends = (fleetId: string) => {
+  const fleetShips = getFleetHistoricalData(fleetId)
+  
+  if (fleetShips.length === 0) return []
+  
+  // Get all unique dates
+  const allDates = [...new Set(fleetShips.flatMap(ship => ship.history.map(h => h.date)))].sort()
+  
+  // Calculate fleet averages for each date
+  return allDates.map(date => {
+    const shipDataForDate = fleetShips.map(ship => 
+      ship.history.find(h => h.date === date)
+    ).filter((data): data is NonNullable<typeof data> => data !== undefined)
+    
+    if (shipDataForDate.length === 0) return null
+    
+    const avgNitrite = shipDataForDate.reduce((sum, data) => sum + data.nitrite, 0) / shipDataForDate.length
+    const avgChloride = shipDataForDate.reduce((sum, data) => sum + data.chloride, 0) / shipDataForDate.length
+    const avgPH = shipDataForDate.reduce((sum, data) => sum + data.pH, 0) / shipDataForDate.length
+    const avgHardness = shipDataForDate.reduce((sum, data) => sum + data.totalHardness, 0) / shipDataForDate.length
+    
+    const statusCounts = {
+      Good: shipDataForDate.filter(d => d.status === "Good").length,
+      Attention: shipDataForDate.filter(d => d.status === "Attention").length,
+      Critical: shipDataForDate.filter(d => d.status === "Critical").length
+    }
+    
+    let overallStatus = "Good"
+    if (statusCounts.Critical > 0) overallStatus = "Critical"
+    else if (statusCounts.Attention > 0) overallStatus = "Attention"
+    
+    return {
+      date,
+      nitrite: Math.round(avgNitrite),
+      chloride: Math.round(avgChloride * 10) / 10,
+      pH: Math.round(avgPH * 10) / 10,
+      totalHardness: Math.round(avgHardness),
+      overallStatus,
+      shipCount: shipDataForDate.length
+    }
+  }).filter(Boolean)
+}
+
+// Helper function to get parameter trends for a specific ship
+export const getShipParameterTrend = (shipId: string, parameter: string) => {
+  const shipData = historicalWaterAnalysisData[shipId as keyof typeof historicalWaterAnalysisData]
+  if (!shipData) return []
+  
+  return shipData.history.map(entry => ({
+    date: entry.date,
+    value: entry[parameter as keyof typeof entry] as number,
+    status: entry.status
+  })).filter(entry => entry.value !== undefined)
 }
