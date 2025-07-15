@@ -227,7 +227,7 @@ export default function ManagerAnalyticsPage() {
               </CardHeader>
               <CardContent>
                 <ChartContainer config={chartConfig}>
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={200}>
                     <LineChart data={fleetTrends}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
@@ -409,37 +409,37 @@ export default function ManagerAnalyticsPage() {
             </Select>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Parameter Trends by Ship</CardTitle>
-              <CardDescription>
-                {selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)} levels across all ships
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig}>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    {parameterTrends.map((ship, index) => (
-                      <Line
-                        key={ship.shipName}
-                        type="monotone"
-                        data={ship.trend}
-                        dataKey="value"
-                        stroke={`hsl(${index * 360 / parameterTrends.length}, 70%, 50%)`}
-                        strokeWidth={2}
-                        name={ship.shipName}
-                      />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {parameterTrends.map((ship, index) => (
+              <Card key={ship.shipName}>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">{ship.shipName}</CardTitle>
+                  <CardDescription>
+                    {selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)} trend
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig}>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={ship.trend}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line
+                          type="monotone"
+                          dataKey="value"
+                          stroke={`hsl(${index * 360 / parameterTrends.length}, 70%, 50%)`}
+                          strokeWidth={2}
+                          name={selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="status" className="space-y-4">
