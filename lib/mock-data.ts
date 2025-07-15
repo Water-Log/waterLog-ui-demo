@@ -118,3 +118,339 @@ export const ships = [
     image: "/cargo-ship.jpg"
   }
 ]
+
+export const fleets = [
+  {
+    id: "1",
+    name: "Pacific Fleet",
+    company: "Maritime Global Corp",
+    region: "Pacific Ocean",
+    status: "Active",
+    createdDate: "2023-01-15",
+    shipOwners: ["owner-1", "owner-2"],
+    shipIds: ["1", "4"],
+    description: "Primary fleet operations in Pacific region",
+    headquarters: "Singapore",
+    totalShips: 2,
+    activeVoyages: 8
+  },
+  {
+    id: "2",
+    name: "Atlantic Fleet",
+    company: "Maritime Global Corp",
+    region: "Atlantic Ocean",
+    status: "Active",
+    createdDate: "2022-08-20",
+    shipOwners: ["owner-3", "owner-4"],
+    shipIds: ["2", "3"],
+    description: "Atlantic operations and European routes",
+    headquarters: "Rotterdam",
+    totalShips: 2,
+    activeVoyages: 12
+  },
+  {
+    id: "3",
+    name: "Mediterranean Fleet",
+    company: "Maritime Global Corp",
+    region: "Mediterranean Sea",
+    status: "Setup",
+    createdDate: "2024-01-10",
+    shipOwners: ["owner-5"],
+    shipIds: ["5"],
+    description: "New fleet for Mediterranean trade routes",
+    headquarters: "Piraeus",
+    totalShips: 1,
+    activeVoyages: 3
+  },
+  {
+    id: "4",
+    name: "Indian Ocean Fleet",
+    company: "Maritime Global Corp",
+    region: "Indian Ocean",
+    status: "Active",
+    createdDate: "2023-06-05",
+    shipOwners: ["owner-6"],
+    shipIds: ["6"],
+    description: "Operations covering India, Middle East, and Africa",
+    headquarters: "Mumbai",
+    totalShips: 1,
+    activeVoyages: 5
+  }
+]
+
+export const shipOwners = [
+  {
+    id: "owner-1",
+    name: "John Smith",
+    email: "john.smith@maritime.com",
+    phone: "+1-555-0123",
+    nationality: "US",
+    licenseNumber: "SO-001-2023",
+    experience: "15 years",
+    specialization: "Container Ships",
+    assignedFleets: ["1"],
+    status: "Active",
+    joinDate: "2023-01-20"
+  },
+  {
+    id: "owner-2",
+    name: "Sarah Johnson",
+    email: "sarah.johnson@maritime.com",
+    phone: "+1-555-0124",
+    nationality: "CA",
+    licenseNumber: "SO-002-2023",
+    experience: "12 years",
+    specialization: "Bulk Carriers",
+    assignedFleets: ["1"],
+    status: "Active",
+    joinDate: "2023-02-15"
+  },
+  {
+    id: "owner-3",
+    name: "Hans Mueller",
+    email: "hans.mueller@maritime.com",
+    phone: "+49-555-0125",
+    nationality: "DE",
+    licenseNumber: "SO-003-2022",
+    experience: "20 years",
+    specialization: "Tankers",
+    assignedFleets: ["2"],
+    status: "Active",
+    joinDate: "2022-08-25"
+  },
+  {
+    id: "owner-4",
+    name: "Marie Dubois",
+    email: "marie.dubois@maritime.com",
+    phone: "+33-555-0126",
+    nationality: "FR",
+    licenseNumber: "SO-004-2022",
+    experience: "18 years",
+    specialization: "Container Ships",
+    assignedFleets: ["2"],
+    status: "Active",
+    joinDate: "2022-09-10"
+  },
+  {
+    id: "owner-5",
+    name: "Giuseppe Romano",
+    email: "giuseppe.romano@maritime.com",
+    phone: "+39-555-0127",
+    nationality: "IT",
+    licenseNumber: "SO-005-2024",
+    experience: "8 years",
+    specialization: "Passenger Ferries",
+    assignedFleets: ["3"],
+    status: "Active",
+    joinDate: "2024-01-15"
+  },
+  {
+    id: "owner-6",
+    name: "Raj Patel",
+    email: "raj.patel@maritime.com",
+    phone: "+91-555-0128",
+    nationality: "IN",
+    licenseNumber: "SO-006-2023",
+    experience: "14 years",
+    specialization: "Bulk Carriers",
+    assignedFleets: ["4"],
+    status: "Active",
+    joinDate: "2023-06-10"
+  }
+]
+
+// Updated ships data to include fleetId
+export const shipsUpdated = [
+  {
+    ...ships[0],
+    fleetId: "1",
+    ownerId: "owner-1"
+  },
+  {
+    ...ships[1],
+    fleetId: "2",
+    ownerId: "owner-3"
+  },
+  {
+    ...ships[2],
+    fleetId: "2",
+    ownerId: "owner-4"
+  },
+  {
+    ...ships[3],
+    fleetId: "1",
+    ownerId: "owner-2"
+  },
+  {
+    ...ships[4],
+    fleetId: "3",
+    ownerId: "owner-5"
+  },
+  {
+    ...ships[5],
+    fleetId: "4",
+    ownerId: "owner-6"
+  }
+]
+
+// Water analysis data for ships
+export const waterAnalysisData = {
+  "1": { // MV Atlantic Pioneer
+    shipId: "1",
+    shipName: "MV Atlantic Pioneer",
+    fleetId: "1",
+    lastAnalysisDate: "2024-07-14",
+    currentStatus: "Good",
+    analyses: {
+      nitrite: { value: 1200, target: "1000-2400", status: "optimal", unit: "ppm" },
+      chloride: { value: 40, target: "Max: 50", status: "normal", unit: "ppm" },
+      pH: { value: 9.2, target: "8.3-10", status: "good", unit: "" },
+      totalHardness: { value: 120, target: "Max: 180", status: "acceptable", unit: "ppm CaCO3" }
+    },
+    alerts: [],
+    lastChemicalAddition: "2024-07-12",
+    nextAnalysisDate: "2024-07-16"
+  },
+  "2": { // MV Mediterranean Star
+    shipId: "2",
+    shipName: "MV Mediterranean Star",
+    fleetId: "2",
+    lastAnalysisDate: "2024-07-14",
+    currentStatus: "Attention",
+    analyses: {
+      nitrite: { value: 2800, target: "1000-2400", status: "high", unit: "ppm" },
+      chloride: { value: 85, target: "Max: 50", status: "high", unit: "ppm" },
+      pH: { value: 11.2, target: "8.3-10", status: "high", unit: "" },
+      totalHardness: { value: 190, target: "Max: 180", status: "high", unit: "ppm CaCO3" }
+    },
+    alerts: [
+      "pH high - Scaling risk due to excess alkalinity",
+      "Chloride elevated - Potential seawater ingress",
+      "Hardness above limits - Immediate attention required"
+    ],
+    lastChemicalAddition: "2024-07-10",
+    nextAnalysisDate: "2024-07-15"
+  },
+  "3": { // MV Baltic Explorer
+    shipId: "3",
+    shipName: "MV Baltic Explorer",
+    fleetId: "2",
+    lastAnalysisDate: "2024-07-13",
+    currentStatus: "Critical",
+    analyses: {
+      nitrite: { value: 800, target: "1000-2400", status: "low", unit: "ppm" },
+      chloride: { value: 120, target: "Max: 50", status: "critical", unit: "ppm" },
+      pH: { value: 7.8, target: "8.3-10", status: "low", unit: "" },
+      totalHardness: { value: 220, target: "Max: 180", status: "critical", unit: "ppm CaCO3" }
+    },
+    alerts: [
+      "Nitrite below optimal range - Corrosion risk",
+      "Chloride critical - Seawater contamination detected",
+      "pH low - Corrosion accelerated",
+      "Hardness critical - Scale formation risk"
+    ],
+    lastChemicalAddition: "2024-07-08",
+    nextAnalysisDate: "2024-07-14"
+  },
+  "4": { // MV Pacific Voyager
+    shipId: "4",
+    shipName: "MV Pacific Voyager",
+    fleetId: "1",
+    lastAnalysisDate: "2024-07-14",
+    currentStatus: "Good",
+    analyses: {
+      nitrite: { value: 1800, target: "1000-2400", status: "optimal", unit: "ppm" },
+      chloride: { value: 35, target: "Max: 50", status: "normal", unit: "ppm" },
+      pH: { value: 9.5, target: "8.3-10", status: "good", unit: "" },
+      totalHardness: { value: 140, target: "Max: 180", status: "acceptable", unit: "ppm CaCO3" }
+    },
+    alerts: [],
+    lastChemicalAddition: "2024-07-13",
+    nextAnalysisDate: "2024-07-16"
+  },
+  "5": { // MV Arctic Breaker
+    shipId: "5",
+    shipName: "MV Arctic Breaker",
+    fleetId: "3",
+    lastAnalysisDate: "2024-07-14",
+    currentStatus: "Attention",
+    analyses: {
+      nitrite: { value: 2200, target: "1000-2400", status: "optimal", unit: "ppm" },
+      chloride: { value: 65, target: "Max: 50", status: "high", unit: "ppm" },
+      pH: { value: 10.5, target: "8.3-10", status: "high", unit: "" },
+      totalHardness: { value: 175, target: "Max: 180", status: "acceptable", unit: "ppm CaCO3" }
+    },
+    alerts: [
+      "Chloride elevated - Monitor for seawater ingress",
+      "pH slightly high - Consider dilution"
+    ],
+    lastChemicalAddition: "2024-07-12",
+    nextAnalysisDate: "2024-07-16"
+  },
+  "6": { // MV Indian Ocean
+    shipId: "6",
+    shipName: "MV Indian Ocean",
+    fleetId: "4",
+    lastAnalysisDate: "2024-07-14",
+    currentStatus: "Good",
+    analyses: {
+      nitrite: { value: 1500, target: "1000-2400", status: "optimal", unit: "ppm" },
+      chloride: { value: 42, target: "Max: 50", status: "normal", unit: "ppm" },
+      pH: { value: 9.0, target: "8.3-10", status: "good", unit: "" },
+      totalHardness: { value: 155, target: "Max: 180", status: "acceptable", unit: "ppm CaCO3" }
+    },
+    alerts: [],
+    lastChemicalAddition: "2024-07-13",
+    nextAnalysisDate: "2024-07-16"
+  }
+}
+
+// Helper function to calculate fleet water analysis summary
+export const getFleetWaterAnalysisSummary = (fleetId: string) => {
+  const fleetShips = Object.values(waterAnalysisData).filter(data => data.fleetId === fleetId)
+  
+  if (fleetShips.length === 0) {
+    return {
+      totalShips: 0,
+      goodCondition: 0,
+      needsAttention: 0,
+      critical: 0,
+      averageAnalyses: {},
+      totalAlerts: 0,
+      overallStatus: "No Data"
+    }
+  }
+
+  const statusCounts = {
+    Good: fleetShips.filter(ship => ship.currentStatus === "Good").length,
+    Attention: fleetShips.filter(ship => ship.currentStatus === "Attention").length,
+    Critical: fleetShips.filter(ship => ship.currentStatus === "Critical").length
+  }
+
+  const totalAlerts = fleetShips.reduce((sum, ship) => sum + ship.alerts.length, 0)
+
+  // Calculate average values
+  const avgNitrite = fleetShips.reduce((sum, ship) => sum + ship.analyses.nitrite.value, 0) / fleetShips.length
+  const avgChloride = fleetShips.reduce((sum, ship) => sum + ship.analyses.chloride.value, 0) / fleetShips.length
+  const avgPH = fleetShips.reduce((sum, ship) => sum + ship.analyses.pH.value, 0) / fleetShips.length
+  const avgHardness = fleetShips.reduce((sum, ship) => sum + ship.analyses.totalHardness.value, 0) / fleetShips.length
+
+  let overallStatus = "Good"
+  if (statusCounts.Critical > 0) overallStatus = "Critical"
+  else if (statusCounts.Attention > 0) overallStatus = "Attention"
+
+  return {
+    totalShips: fleetShips.length,
+    goodCondition: statusCounts.Good,
+    needsAttention: statusCounts.Attention,
+    critical: statusCounts.Critical,
+    averageAnalyses: {
+      nitrite: Math.round(avgNitrite),
+      chloride: Math.round(avgChloride * 10) / 10,
+      pH: Math.round(avgPH * 10) / 10,
+      totalHardness: Math.round(avgHardness)
+    },
+    totalAlerts,
+    overallStatus
+  }
+}

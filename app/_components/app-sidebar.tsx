@@ -9,7 +9,9 @@ import {
   Calendar,
   FileText,
   MapPin,
+  Building2,
 } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 import {
   Sidebar,
@@ -26,8 +28,8 @@ import {
 } from "@/components/ui/sidebar"
 import { SidebarSettings } from "./sidebar-settings"
 
-// Menu items.
-const items = [
+// Menu items for shipowners
+const shipOwnerItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -65,7 +67,40 @@ const items = [
   },
 ]
 
+// Menu items for managers
+const managerItems = [
+  {
+    title: "Manager Dashboard",
+    url: "/manager",
+    icon: Home,
+  },
+  {
+    title: "Fleets",
+    url: "/manager/fleets",
+    icon: Building2,
+  },
+  {
+    title: "Ship Owners",
+    url: "/manager/ship-owners",
+    icon: Users,
+  },
+  {
+    title: "Fleet Analytics",
+    url: "/manager/analytics",
+    icon: BarChart3,
+  },
+  {
+    title: "Fleet Reports",
+    url: "/manager/reports",
+    icon: FileText,
+  },
+]
+
 export function AppSidebar() {
+  const pathname = usePathname()
+  const isManagerRoute = pathname?.startsWith('/manager')
+  const items = isManagerRoute ? managerItems : shipOwnerItems
+
   return (
     <Sidebar 
       collapsible="icon" 
