@@ -69,12 +69,10 @@ export function AppSidebar() {
   return (
     <Sidebar 
       collapsible="icon" 
-      className="[&>div:last-child]:top-16 [&>div:last-child]:h-[calc(100vh-4rem)]"
     >
       <SidebarContent className="pt-4">
       <SidebarTrigger className="ml-2" />
-
-        <SidebarGroup className="pt-4">
+        <SidebarGroup className="">
           
           <SidebarGroupLabel className="group-data-[collapsible=icon]:sr-only">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -93,7 +91,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="mt-4">
+      <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Settings">
