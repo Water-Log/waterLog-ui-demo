@@ -1,12 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, Ship, Users, Building2, TrendingUp, UserPlus, Anchor } from "lucide-react"
+import { BarChart3, Ship, Users, Building2, TrendingUp, UserPlus } from "lucide-react"
 import { fleets, shipOwners, shipsUpdated } from "@/lib/mock-data"
+import { FleetCard } from "../_components/fleet-card"
 
 export default function ManagerPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Fleet Manager</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Fleet Management</h1>
         <p className="text-muted-foreground">
           Manage your company's fleets, ships, and shipowner assignments
         </p>
@@ -161,40 +162,12 @@ export default function ManagerPage() {
               );
               
               return (
-                <div key={fleet.id} className="p-4 rounded-lg border border-border">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">{fleet.name}</h3>
-                    <Anchor className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Ships:</span>
-                      <span>{fleet.totalShips}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Ship Owners:</span>
-                      <span>{fleetShipOwners.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Region:</span>
-                      <span className="text-xs">{fleet.region}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Status:</span>
-                      <span className={fleet.status === 'Active' ? 'text-green-600' : 'text-blue-600'}>
-                        {fleet.status}
-                      </span>
-                    </div>
-                    {fleetShipOwners.length > 0 && (
-                      <div className="mt-3 pt-2 border-t border-border">
-                        <p className="text-xs text-muted-foreground mb-1">Assigned Owners:</p>
-                        {fleetShipOwners.map((owner) => (
-                          <p key={owner.id} className="text-xs">{owner.name}</p>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <FleetCard
+                  key={fleet.id}
+                  fleet={fleet}
+                  shipOwners={fleetShipOwners}
+                  showWaterAnalysis={false}
+                />
               );
             })}
           </div>
