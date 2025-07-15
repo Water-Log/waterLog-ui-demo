@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { 
   Building2, 
   Ship, 
@@ -115,7 +116,12 @@ export function FleetCard({
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
-                {fleet.name}
+                <Link 
+                  href={`/manager/fleets/${fleet.id}`}
+                  className="hover:text-primary transition-colors cursor-pointer"
+                >
+                  {fleet.name}
+                </Link>
               </CardTitle>
               <CardDescription>{fleet.description}</CardDescription>
             </div>
@@ -300,7 +306,12 @@ export function FleetCard({
   return (
     <div className="p-4 rounded-lg border border-border">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-semibold">{fleet.name}</h3>
+        <Link 
+          href={`/manager/fleets/${fleet.id}`}
+          className="font-semibold hover:text-primary transition-colors cursor-pointer"
+        >
+          {fleet.name}
+        </Link>
         <Anchor className="h-4 w-4 text-muted-foreground" />
       </div>
       <div className="space-y-2 text-sm">
