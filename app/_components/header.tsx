@@ -4,7 +4,6 @@ import { Bell, Search, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SidebarSettings } from "./sidebar-settings"
 import Image from "next/image"
 
 export function Header() {
@@ -26,7 +24,6 @@ export function Header() {
         </div>
         <span className="font-semibold">WaterLog</span>
       </div>
-    
 
       {/* Search */}
       <div className="flex flex-1 items-center gap-2 px-4">

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3, Ship, Users, Building2, TrendingUp, UserPlus } from "lucide-react"
 import { fleets, shipOwners, shipsUpdated } from "@/lib/mock-data"
-import { FleetCard } from "../_components/fleet-card"
+import { FleetCard } from "@/components/fleet-card"
 
 export default function ManagerPage() {
   return (

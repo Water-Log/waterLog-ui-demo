@@ -8,7 +8,7 @@ import {
   AlertTriangle
 } from "lucide-react"
 import { fleets, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
-import { FleetCard } from "@/app/_components/fleet-card"
+import { FleetCard } from "@/components/fleet-card"
 import { useState } from "react"
 
 export default function FleetsPage() {

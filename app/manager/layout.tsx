@@ -5,5 +5,5 @@ export default function ManagerLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <MainLayout>{children}</MainLayout>
+  return <>{children}</>
 }

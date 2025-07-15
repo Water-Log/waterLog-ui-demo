@@ -1,6 +1,6 @@
 "use client"
 
-import { ShipCard } from "@/app/_components/ship-card"
+import { ShipCard } from "@/components/ship-card"
 import { ships } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

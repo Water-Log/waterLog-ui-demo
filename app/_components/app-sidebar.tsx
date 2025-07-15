@@ -26,7 +26,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { SidebarSettings } from "./sidebar-settings"
+import { SidebarSettings } from "@/components/sidebar-settings"
 
 // Menu items for shipowners
 const shipOwnerItems = [
@@ -105,10 +105,11 @@ export function AppSidebar() {
     <Sidebar 
       collapsible="icon" 
     >
-      <SidebarContent className="pt-4">
-      <SidebarTrigger className="ml-2" />
-        <SidebarGroup className="">
-          
+      <SidebarContent className="pt-2">
+        <div className="px-2 pb-4">
+          <SidebarTrigger className="mb-4" />
+        </div>
+        <SidebarGroup>
           <SidebarGroupLabel className="group-data-[collapsible=icon]:sr-only">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
