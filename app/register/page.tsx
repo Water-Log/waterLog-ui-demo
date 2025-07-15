@@ -7,12 +7,12 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Image from "next/image"
-import Link from "next/link"
 import { useState } from "react"
 import { countries } from "@/lib/mock-data"
 
 // Icons
-import { User, Building2, ChevronLeft, ChevronRight } from "lucide-react"
+import { Building2, Check } from "lucide-react"
+import { useLanguage, Language } from "../_providers/language"
 
 export default function RegisterPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -28,6 +28,13 @@ export default function RegisterPage() {
   const [name, setName] = useState("")
   const [surname, setSurname] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
+  
+  // NEW: language context
+  const { language, setLanguage, t } = useLanguage()
+  const languages: { code: Language; src: string; alt: string }[] = [
+    { code: "en", src: "/en-flag.png", alt: "English" },
+    { code: "tr", src: "/tr-flag.png", alt: "Turkish" },
+  ]
   
   const totalSteps = 4
   
@@ -54,7 +61,7 @@ export default function RegisterPage() {
       <div className="hidden md:block relative min-h-screen w-96 overflow-hidden">
         {/* Background image */}
         <div 
-          className="absolute inset-0 z-0" 
+          className="absolute inset-0 z-0 h-full" 
           style={{
             backgroundImage: 'url("/cargo-ship.jpg")',
             backgroundSize: 'cover',
@@ -64,48 +71,75 @@ export default function RegisterPage() {
         />
         
         {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-blue-900/50 to-blue-900/70 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 via-blue-900/80 to-blue-900/70 z-10" />
         
         {/* Content */}
-        <div className="relative z-20 p-10 h-full flex flex-col">
-          <Image 
-            src="/logo.png" 
-            alt="WaterLog" 
-            width={150} 
-            height={40} 
-            className="mb-16"
-          />
+        <div className="relative z-20 p-10 h-full flex flex-col justify-between h-screen">
+          <div className="flex-1">
+            <Image
+              className="w-full"
+              src="/register-logo.png" 
+              alt="WaterLog" 
+              width={300} 
+              height={100} 
+            />
+          </div>
           
           {/* Step indicators */}
-          <div className="space-y-8">
-            <StepIndicator 
-              number={1} 
-              title="General Information"
-              subtitle="Basic information about you"
-              isActive={currentStep === 1}
-              isCompleted={currentStep > 1}
-            />
-            <StepIndicator 
-              number={2} 
-              title="Country Selection"
-              subtitle="Select your country"
-              isActive={currentStep === 2}
-              isCompleted={currentStep > 2}
-            />
-            <StepIndicator 
-              number={3} 
-              title="Company Information"
-              subtitle="Your company details"
-              isActive={currentStep === 3}
-              isCompleted={currentStep > 3}
-            />
-            <StepIndicator 
-              number={4} 
-              title="Login Information"
-              subtitle="Information to access your account"
-              isActive={currentStep === 4}
-              isCompleted={currentStep > 4}
-            />
+          <div className="flex-1 py-8">
+            <div className="relative">
+              {/* Background connecting line */}
+              <div className="absolute left-5 top-12 bottom-12 w-0.5 bg-white/20"></div>
+              
+              {/* Progress connecting line */}
+              <div 
+                className="absolute left-5 top-12 w-0.5 bg-gradient-to-b from-green-500 to-blue-500 transition-all duration-500"
+                style={{ 
+                  height: `${((currentStep - 1) / (totalSteps - 1)) * 100}%`,
+                  maxHeight: 'calc(100% - 96px)'
+                }}
+              ></div>
+              
+              <div className="space-y-6">
+                <StepIndicator 
+                  number={1} 
+                  title={t('steps.1.title')}
+                  subtitle={t('steps.1.subtitle')}
+                  isActive={currentStep === 1}
+                  isCompleted={currentStep > 1}
+                  isFirst={true}
+                />
+                <StepIndicator 
+                  number={2} 
+                  title={t('steps.2.title')}
+                  subtitle={t('steps.2.subtitle')}
+                  isActive={currentStep === 2}
+                  isCompleted={currentStep > 2}
+                />
+                <StepIndicator 
+                  number={3} 
+                  title={t('steps.3.title')}
+                  subtitle={t('steps.3.subtitle')}
+                  isActive={currentStep === 3}
+                  isCompleted={currentStep > 3}
+                />
+                <StepIndicator 
+                  number={4} 
+                  title={t('steps.4.title')}
+                  subtitle={t('steps.4.subtitle')}
+                  isActive={currentStep === 4}
+                  isCompleted={currentStep > 4}
+                  isLast={true}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col items-start justify-end">
+            <div className="flex flex-col items-start justify-center">
+              <p className="text-white">Fleet Water Management System</p>
+              <p className="text-white text-sm">WaterLog © {new Date().getFullYear()}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -114,24 +148,27 @@ export default function RegisterPage() {
       <div className="flex-1 p-6 flex flex-col items-center justify-center">
         <div className="w-full max-w-md">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-800">Register</h1>
+            <h1 className="text-2xl font-bold text-gray-800">{t('register.title')}</h1>
             <div className="flex space-x-2">
-              <Link href="#" className="flex items-center">
-                <Image src="/en-flag.png" alt="English" width={24} height={16} />
-              </Link>
-              <Link href="#" className="flex items-center">
-                <Image src="/tr-flag.png" alt="Turkish" width={24} height={16} />
-              </Link>
-              <div className="ml-2 bg-gray-200 rounded-full p-1 flex">
-                <div className="h-6 w-6 rounded-full bg-yellow-400"></div>
-              </div>
+              {languages.map((lng) => (
+                <button
+                  key={lng.code}
+                  onClick={() => setLanguage(lng.code)}
+                  className={`flex items-center transition-all rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 ${
+                    language === lng.code ? "ring-2 ring-blue-900 overflow-hidden" : "opacity-60 hover:opacity-100"
+                  }`}
+                  aria-label={lng.alt}
+                >
+                  <Image src={lng.src} alt={lng.alt} width={24} height={16} />
+                </button>
+              ))}
             </div>
           </div>
           
           {currentStep === 1 && (
             <div>
-              <h2 className="text-2xl font-bold mb-6">Account Type</h2>
-              <p className="text-gray-600 mb-8">Please select your account type</p>
+              <h2 className="text-2xl font-bold mb-6">{t('accountType.heading')}</h2>
+              <p className="text-gray-600 mb-8">{t('accountType.description')}</p>
               
               <div className="space-y-4">
                 <Card 
@@ -143,8 +180,8 @@ export default function RegisterPage() {
                       <Building2 className={`h-6 w-6 ${accountType === "business" ? "text-blue-500" : "text-gray-500"}`} />
                     </div>
                     <div>
-                      <h3 className="font-medium">Business Account</h3>
-                      <p className="text-sm text-gray-500">Corporate user account</p>
+                      <h3 className="font-medium">{t('businessAccount.title')}</h3>
+                      <p className="text-sm text-gray-500">{t('businessAccount.subtitle')}</p>
                     </div>
                     {accountType === "business" && (
                       <div className="ml-auto">
@@ -163,8 +200,8 @@ export default function RegisterPage() {
           
           {currentStep === 2 && (
             <div>
-              <h2 className="text-2xl font-bold mb-6">Country Selection</h2>
-              <p className="text-gray-600 mb-8">Please select your country</p>
+              <h2 className="text-2xl font-bold mb-6">{t('countrySelect.heading')}</h2>
+              <p className="text-gray-600 mb-8">{t('countrySelect.description')}</p>
               
               <div className="space-y-4">
                 <div>
@@ -188,8 +225,8 @@ export default function RegisterPage() {
           
           {currentStep === 3 && (
             <div>
-              <h2 className="text-2xl font-bold mb-6">Company Information</h2>
-              <p className="text-gray-600 mb-8">Please enter your company details.</p>
+              <h2 className="text-2xl font-bold mb-6">{t('companyInfo.heading')}</h2>
+              <p className="text-gray-600 mb-8">{t('companyInfo.description')}</p>
               
               <div className="space-y-4">
                 <div>
@@ -244,8 +281,8 @@ export default function RegisterPage() {
           
           {currentStep === 4 && (
             <div>
-              <h2 className="text-2xl font-bold mb-6">Login Information</h2>
-              <p className="text-gray-600 mb-8">Please enter your account details.</p>
+              <h2 className="text-2xl font-bold mb-6">{t('loginInfo.heading')}</h2>
+              <p className="text-gray-600 mb-8">{t('loginInfo.description')}</p>
               
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -315,7 +352,7 @@ export default function RegisterPage() {
               disabled={currentStep === 1}
               className="text-gray-600"
             >
-              Previous
+              {t('button.previous')}
             </Button>
             
             <div className="flex items-center space-x-2">
@@ -339,7 +376,7 @@ export default function RegisterPage() {
               }
               className="bg-green-500 hover:bg-green-600 text-white"
             >
-              {currentStep === totalSteps ? "Complete Registration" : "Continue"}
+              {currentStep === totalSteps ? t('button.complete') : t('button.continue')}
             </Button>
           </div>
         </div>
@@ -354,26 +391,77 @@ function StepIndicator({
   title, 
   subtitle, 
   isActive, 
-  isCompleted 
+  isCompleted,
+  isFirst = false,
+  isLast = false
 }: { 
   number: number; 
   title: string; 
   subtitle: string; 
   isActive: boolean; 
   isCompleted: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
 }) {
+  const { t } = useLanguage()
   return (
-    <div className="flex items-start">
+    <div className="relative flex items-start">
+      {/* Progress line segment */}
+      {!isFirst && (
+        <div 
+          className={`absolute left-5 -top-6 h-6 w-0.5 ${
+            isCompleted ? 'bg-green-500' : isActive ? 'bg-blue-500' : 'bg-blue-300/50'
+          }`}
+        />
+      )}
+      {!isLast && (
+        <div 
+          className={`absolute left-5 top-12 h-6 w-0.5 ${
+            isCompleted ? 'bg-green-500' : 'bg-blue-300/50'
+          }`}
+        />
+      )}
+      
       <div 
-        className={`flex items-center justify-center w-10 h-10 rounded-md mr-4
-          ${isActive ? "bg-blue-600 text-white" : 
-            isCompleted ? "bg-green-500 text-white" : "bg-blue-800/70 text-white"}`}
+        className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full mr-4 border-2 transition-all duration-300 shadow-lg
+          ${isActive ? "bg-blue-600 text-white border-blue-600 shadow-blue-500/50" : 
+            isCompleted ? "bg-green-500 border-green-500 text-white shadow-green-500/50" : "bg-white/20 text-white border-white/30 backdrop-blur-sm"}`}
       >
-        {number}
+        {isCompleted ? (
+          <Check className="h-5 w-5 animate-pulse" />
+        ) : (
+          <span className="font-semibold text-sm">{number}</span>
+        )}
       </div>
-      <div>
-        <h3 className={`font-medium ${isActive ? "text-white" : "text-white opacity-90"}`}>{title}</h3>
-        <p className={`text-sm ${isActive ? "text-blue-200" : "text-blue-200 opacity-80"}`}>{subtitle}</p>
+      
+      <div className="flex-1">
+        <h3 className={`font-semibold text-base mb-1 transition-colors duration-200 ${
+          isActive ? "text-white" : isCompleted ? "text-green-100" : "text-white/90"
+        }`}>
+          {title}
+        </h3>
+        <p className={`text-sm transition-colors duration-200 ${
+          isActive ? "text-blue-200" : isCompleted ? "text-green-200" : "text-white/70"
+        }`}>
+          {subtitle}
+        </p>
+        
+        {/* Progress indicator */}
+        <div className="mt-2 flex items-center">
+          <div className={`h-1 w-8 rounded-full transition-all duration-300 ${
+            isCompleted ? 'bg-green-400' : isActive ? 'bg-blue-400' : 'bg-white/20'
+          }`} />
+          {isActive && (
+            <div className="ml-2 text-xs text-blue-200 font-medium">
+              {t('status.inProgress')}
+            </div>
+          )}
+          {isCompleted && (
+            <div className="ml-2 text-xs text-green-200 font-medium">
+              {t('status.completed')}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

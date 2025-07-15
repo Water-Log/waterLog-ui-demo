@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { LanguageProvider } from './_providers/language'
+import { AuthProvider } from './_providers/auth'
 
 export const metadata: Metadata = {
   title: 'WaterLog',
@@ -14,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <LanguageProvider initialLanguage="en">
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </LanguageProvider>
+      </body>
     </html>
   )
 }
