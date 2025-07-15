@@ -1056,3 +1056,138 @@ export const getShipParameterTrend = (shipId: string, parameter: string) => {
     status: entry.status
   })).filter(entry => entry.value !== undefined)
 }
+
+// AI Comments for water analysis reports
+export const aiComments = {
+  nitrite: {
+    optimal: "Nitrite optimal ({value} ppm). No action needed. [Target: 1000-2400 ppm]",
+    high: "Nitrite elevated ({value} ppm). Consider reducing chemical dosing. Monitor for system efficiency. [Target: 1000-2400 ppm]",
+    low: "Nitrite below optimal range ({value} ppm). Corrosion risk increased. Add nitrite-based inhibitor. [Target: 1000-2400 ppm]",
+    critical: "Nitrite critical ({value} ppm). Immediate chemical treatment required. System protection compromised. [Target: 1000-2400 ppm]"
+  },
+  chloride: {
+    normal: "Chloride normal ({value} ppm). No seawater ingress detected. Risk of pitting corrosion minimal. [Max: 50 ppm]",
+    high: "Chloride elevated ({value} ppm). Potential seawater ingress. Monitor system integrity. [Max: 50 ppm]",
+    critical: "Chloride critical ({value} ppm). Seawater contamination detected. Immediate system inspection required. [Max: 50 ppm]"
+  },
+  pH: {
+    good: "pH optimal ({value}). System alkalinity balanced. Continue monitoring. [Target: 8.3-10]",
+    high: "pH high ({value}). Scaling risk due to excess alkalinity. Consider dilution. [Target: 8.3-10]",
+    low: "pH low ({value}). Corrosion risk increased. Add alkaline treatment. [Target: 8.3-10]"
+  },
+  totalHardness: {
+    acceptable: "Hardness acceptable ({value} ppm). Within safe operational limits. Maintain routine monitoring. [Max: 180 ppm]",
+    high: "Hardness elevated ({value} ppm). Scale formation risk. Consider water softening treatment. [Max: 180 ppm]",
+    critical: "Hardness critical ({value} ppm). Immediate scale formation risk. Water treatment required. [Max: 180 ppm]"
+  }
+}
+
+// Chemical additions data for reports
+export const chemicalAdditions = {
+  "1": [
+    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 60, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 44, unit: "Lt" },
+    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 32, unit: "Lt" },
+  ],
+  "2": [
+    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 45, unit: "Lt" },
+    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 52, unit: "Lt" },
+    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 68, unit: "Lt" },
+    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 75, unit: "Lt" },
+    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 80, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 85, unit: "Lt" },
+    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 90, unit: "Lt" },
+  ],
+  "3": [
+    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 40, unit: "Lt" },
+    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 65, unit: "Lt" },
+    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 85, unit: "Lt" },
+    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 95, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 100, unit: "Lt" },
+    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 105, unit: "Lt" },
+  ],
+  "4": [
+    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 35, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 30, unit: "Lt" },
+    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+  ],
+  "5": [
+    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 20, unit: "Lt" },
+    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 40, unit: "Lt" },
+    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 45, unit: "Lt" },
+    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 50, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 55, unit: "Lt" },
+    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 60, unit: "Lt" },
+  ],
+  "6": [
+    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 20, unit: "Lt" },
+    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 18, unit: "Lt" },
+  ]
+}
+
+// Helper function to generate AI comments based on parameter status
+export const generateAIComment = (parameter: string, value: number, status: string) => {
+  const comments = aiComments[parameter as keyof typeof aiComments]
+  if (!comments) return `${parameter} value: ${value}`
+  
+  const comment = comments[status as keyof typeof comments] || `${parameter} value: ${value}`
+  return comment.replace('{value}', value.toString())
+}
+
+// Helper function to get chemical addition for a specific date
+export const getChemicalAddition = (shipId: string, date: string) => {
+  const additions = chemicalAdditions[shipId as keyof typeof chemicalAdditions]
+  if (!additions) return null
+  
+  return additions.find(addition => addition.date === date) || null
+}
+
+// Helper function to generate monthly report data
+export const generateMonthlyReport = (shipId: string, month: string, year: string) => {
+  const shipData = historicalWaterAnalysisData[shipId as keyof typeof historicalWaterAnalysisData]
+  if (!shipData) return null
+  
+  const daysInMonth = new Date(parseInt(year), parseInt(month), 0).getDate()
+  const monthlyData = []
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = `${year}-${month.padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+    const analysisData = shipData.history.find(h => h.date === date)
+    const chemicalData = getChemicalAddition(shipId, date)
+    
+    monthlyData.push({
+      day,
+      date,
+      nitrite: analysisData?.nitrite || null,
+      chloride: analysisData?.chloride || null,
+      pH: analysisData?.pH || null,
+      totalHardness: analysisData?.totalHardness || null,
+      status: analysisData?.status || null,
+      chemicalAddition: chemicalData?.amount || null,
+      chemicalType: chemicalData?.chemical || null
+    })
+  }
+  
+  return {
+    shipId,
+    shipName: shipData.shipName,
+    month,
+    year,
+    data: monthlyData
+  }
+}
