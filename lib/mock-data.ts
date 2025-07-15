@@ -26,44 +26,7 @@ export const countries = [
   { value: "nz", label: "New Zealand", code: "NZ", phoneCode: "+64" },
 ]
 
-export const fleets = [
-  {
-    id: "fleet-1",
-    name: "Atlantic Fleet",
-    description: "Primary commercial fleet operating in Atlantic routes",
-    manager: "Admiral Sarah Johnson",
-    headquarters: "Hamburg, Germany",
-    established: 2015,
-    totalShips: 3,
-    status: "Active",
-    region: "Atlantic Ocean",
-    operationType: "Commercial"
-  },
-  {
-    id: "fleet-2", 
-    name: "Pacific Maritime Group",
-    description: "Specialized fleet for Pacific region cargo operations",
-    manager: "Captain Michael Chen",
-    headquarters: "Singapore",
-    established: 2018,
-    totalShips: 2,
-    status: "Active",
-    region: "Pacific Ocean",
-    operationType: "Cargo"
-  },
-  {
-    id: "fleet-3",
-    name: "Arctic Operations",
-    description: "Ice-breaking and Arctic exploration fleet",
-    manager: "Captain Lars Nordstrom",
-    headquarters: "Oslo, Norway", 
-    established: 2020,
-    totalShips: 1,
-    status: "Active",
-    region: "Arctic Ocean",
-    operationType: "Specialized"
-  }
-]
+// Note: Fleet data is defined below with the correct structure
 
 export const ships = [
   {
@@ -80,7 +43,7 @@ export const ships = [
     lastInspection: "2024-01-15",
     nextMaintenance: "2024-03-20",
     image: "/cargo-ship.jpg",
-    fleetId: "fleet-1"
+    fleetId: "1"
   },
   {
     id: "2",
@@ -96,7 +59,7 @@ export const ships = [
     lastInspection: "2024-02-10",
     nextMaintenance: "2024-04-15",
     image: "/cargo-ship.jpg",
-    fleetId: "fleet-1"
+    fleetId: "2"
   },
   {
     id: "3",
@@ -112,7 +75,7 @@ export const ships = [
     lastInspection: "2024-01-20",
     nextMaintenance: "2024-02-28",
     image: "/cargo-ship.jpg",
-    fleetId: "fleet-1"
+    fleetId: "2"
   },
   {
     id: "4",
@@ -128,7 +91,7 @@ export const ships = [
     lastInspection: "2024-02-05",
     nextMaintenance: "2024-05-10",
     image: "/cargo-ship.jpg",
-    fleetId: "fleet-2"
+    fleetId: "1"
   },
   {
     id: "5",
@@ -144,7 +107,7 @@ export const ships = [
     lastInspection: "2024-01-30",
     nextMaintenance: "2024-04-01",
     image: "/cargo-ship.jpg",
-    fleetId: "fleet-3"
+    fleetId: "3"
   },
   {
     id: "6",
@@ -160,7 +123,7 @@ export const ships = [
     lastInspection: "2024-02-12",
     nextMaintenance: "2024-06-01",
     image: "/cargo-ship.jpg",
-    fleetId: "fleet-2"
+    fleetId: "4"
   }
 ]
 
