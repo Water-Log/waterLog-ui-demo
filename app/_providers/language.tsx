@@ -23,12 +23,12 @@ const translations: Record<Language, Record<string, string>> = {
     'register.title': 'Register',
     'steps.1.title': 'General Information',
     'steps.1.subtitle': 'Basic information about your company',
-    'steps.2.title': 'Country Selection',
-    'steps.2.subtitle': 'Select your country',
-    'steps.3.title': 'Company Information',
-    'steps.3.subtitle': 'Your company details',
-    'steps.4.title': 'Login Information',
-    'steps.4.subtitle': 'Information to access your account',
+    'steps.2.title': 'Detailed Information',
+    'steps.2.subtitle': 'Detailed information about your company',
+    'steps.3.title': 'Contact and Tax Information',
+    'steps.3.subtitle': 'Contact and Tax information about your company',
+    'steps.4.title': 'User Account Information',
+    'steps.4.subtitle': 'User account information',
 
     'accountType.heading': 'Account Type',
     'accountType.description': 'Please select your account type',
@@ -38,11 +38,20 @@ const translations: Record<Language, Record<string, string>> = {
     'countrySelect.heading': 'Country Selection',
     'countrySelect.description': 'Please select your country',
 
+    'companyDetailed.heading': 'Detailed Company Information',
+    'companyDetailed.description': 'Enter detailed company information about your company.',
+
+    'companyGeneral.heading': 'General Company Information',
+    'companyGeneral.description': 'Enter basic company information.',
+
+    'companyTax.heading': 'Tax & Billing Information',
+    'companyTax.description': 'Enter tax and billing details of your company.',
+
     'companyInfo.heading': 'Company Information',
     'companyInfo.description': 'Please enter your company details.',
 
-    'loginInfo.heading': 'Login Information',
-    'loginInfo.description': 'Please enter your account details.',
+    'loginInfo.heading': 'User Account Information',
+    'loginInfo.description': 'Please enter user account details.',
 
     'button.previous': 'Previous',
     'button.continue': 'Continue',
@@ -76,11 +85,20 @@ const translations: Record<Language, Record<string, string>> = {
     'countrySelect.heading': 'Ülke Seçimi',
     'countrySelect.description': 'Lütfen ülkenizi seçin',
 
+    'companyDetailed.heading': 'Şirket Detaylı Bilgileri',
+    'companyDetailed.description': 'Şirketiniz hakkında detaylı bilgileri girin.',
+
+    'companyGeneral.heading': 'Şirket Genel Bilgileri',
+    'companyGeneral.description': 'Şirketiniz hakkında temel bilgileri girin.',
+
+    'companyTax.heading': 'Vergi ve Fatura Bilgileri',
+    'companyTax.description': 'Vergi ve fatura bilgilerinizi girin.',
+
     'companyInfo.heading': 'Şirket Bilgileri',
     'companyInfo.description': 'Lütfen şirket bilgilerinizi girin.',
 
-    'loginInfo.heading': 'Giriş Bilgileri',
-    'loginInfo.description': 'Lütfen hesap bilgilerinizi girin.',
+    'loginInfo.heading': 'Kullanıcı Hesabı Bilgileri',
+    'loginInfo.description': 'Lütfen kullanıcı hesabı bilgilerinizi girin.',
 
     'button.previous': 'Geri',
     'button.continue': 'Devam',
