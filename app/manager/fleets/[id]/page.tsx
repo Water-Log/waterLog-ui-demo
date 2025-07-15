@@ -23,6 +23,7 @@ import {
 import Link from "next/link"
 import { fleets, ships, shipOwners, waterAnalysisData, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
 import { notFound } from "next/navigation"
+import { AddShipOwnerButton } from "@/components/ui/add-ship-owner-button"
 
 interface FleetDetailPageProps {
   params: {
@@ -88,6 +89,12 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
       default:
         return { status: "unknown", icon: <Minus className="h-3 w-3 text-gray-600" /> }
     }
+  }
+
+  const handleAssignShipOwner = () => {
+    // TODO: Implement ship owner assignment logic
+    console.log(`Assign ship owner to fleet: ${fleet.id}`)
+    // This could open a modal with available ship owners
   }
 
   return (
@@ -262,18 +269,23 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
       </Card>
 
       {/* Assigned Ship Owners */}
-      {fleetOwners.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Assigned Ship Owners
-            </CardTitle>
-            <CardDescription>
-              Ship owners responsible for this fleet
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Assigned Ship Owners ({fleetOwners.length})
+              </CardTitle>
+              <CardDescription>
+                Ship owners responsible for this fleet
+              </CardDescription>
+            </div>
+            <AddShipOwnerButton onClick={handleAssignShipOwner} />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {fleetOwners.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {fleetOwners.map((owner) => (
                 <div key={owner.id} className="p-4 rounded-lg border border-border">
@@ -292,9 +304,15 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-sm">No ship owners assigned to this fleet yet.</p>
+              <p className="text-xs">Click "Add Ship Owner" to assign someone to this fleet.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Fleet Ships */}
       <Card>
@@ -338,15 +356,68 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
                     </div>
                   </div>
 
-                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Location:</span>
-                      <p className="font-medium">{ship.location}</p>
+                  {/* Water Analysis Data */}
+                  {shipWaterData && (
+                    <div className="mt-3">
+                      <h5 className="text-sm font-medium mb-3 flex items-center gap-2">
+                        <Beaker className="h-4 w-4" />
+                        Water Analysis Data
+                        <span className="text-xs text-muted-foreground">
+                          ({new Date(shipWaterData.lastAnalysisDate).toLocaleDateString()})
+                        </span>
+                      </h5>
+                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium">Nitrite</span>
+                            {getAnalysisStatus(shipWaterData.analyses.nitrite.value, "nitrite").icon}
+                          </div>
+                          <p className="text-lg font-bold">{shipWaterData.analyses.nitrite.value} ppm</p>
+                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.nitrite.target}</p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium">Chloride</span>
+                            {getAnalysisStatus(shipWaterData.analyses.chloride.value, "chloride").icon}
+                          </div>
+                          <p className="text-lg font-bold">{shipWaterData.analyses.chloride.value} ppm</p>
+                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.chloride.target}</p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium">pH Level</span>
+                            {getAnalysisStatus(shipWaterData.analyses.pH.value, "pH").icon}
+                          </div>
+                          <p className="text-lg font-bold">{shipWaterData.analyses.pH.value}</p>
+                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.pH.target}</p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-medium">Total Hardness</span>
+                            {getAnalysisStatus(shipWaterData.analyses.totalHardness.value, "totalHardness").icon}
+                          </div>
+                          <p className="text-lg font-bold">{shipWaterData.analyses.totalHardness.value} ppm</p>
+                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.totalHardness.target}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-3 md:grid-cols-2 text-xs text-muted-foreground mt-3 pt-2 border-t border-border">
+                        <div>
+                          <span>Last Chemical Addition:</span>
+                          <p className="font-medium">{new Date(shipWaterData.lastChemicalAddition).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                          <span>Next Analysis:</span>
+                          <p className="font-medium">{new Date(shipWaterData.nextAnalysisDate).toLocaleDateString()}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-muted-foreground">Capacity:</span>
-                      <p className="font-medium">{ship.capacity}</p>
-                    </div>
+                  )}
+
+                  <div className="grid gap-3 md:grid-cols-2 text-sm mt-3">
                     <div>
                       <span className="text-muted-foreground">Last Inspection:</span>
                       <p className="font-medium">{new Date(ship.lastInspection).toLocaleDateString()}</p>

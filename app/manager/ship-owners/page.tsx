@@ -1,8 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Users, Ship, Calendar, Mail, Phone, MapPin, Plus } from "lucide-react"
+import { Users, Ship, Calendar, Mail, Phone, MapPin } from "lucide-react"
 import { shipOwners, fleets } from "@/lib/mock-data"
+import { AddShipOwnerButton } from "@/components/ui/add-ship-owner-button"
 
 export default function ShipOwnersPage() {
   return (
@@ -14,10 +14,7 @@ export default function ShipOwnersPage() {
             Manage ship owners and their fleet assignments
           </p>
         </div>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Ship Owner
-        </Button>
+        <AddShipOwnerButton />
       </div>
 
       {/* Stats Cards */}
