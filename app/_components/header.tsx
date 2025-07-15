@@ -4,6 +4,8 @@ import { Bell, Search, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +15,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
+import { getCurrentUserWithCompany } from "@/lib/mock-data"
 
 export function Header() {
+  const { user, company } = getCurrentUserWithCompany()
+
+  const getRoleBadgeVariant = (role: string) => {
+    switch (role) {
+      case "Manager":
+        return "default"
+      case "Shipowner":
+        return "secondary"
+      case "Technician":
+        return "outline"
+      default:
+        return "outline"
+    }
+  }
+
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 relative z-50">
       {/* Logo */}
@@ -50,7 +68,7 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/placeholder-user.jpg" alt="User" />
+                <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback>
                   <User className="h-4 w-4" />
                 </AvatarFallback>
@@ -59,10 +77,15 @@ export function Header() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">John Doe</p>
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium leading-none">{user.name}</p>
+                  <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
+                    {user.role}
+                  </Badge>
+                </div>
                 <p className="text-xs leading-none text-muted-foreground">
-                  john@example.com
+                  {company?.name}
                 </p>
               </div>
             </DropdownMenuLabel>
