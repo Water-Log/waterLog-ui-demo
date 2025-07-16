@@ -145,34 +145,6 @@ export default function ManagerPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Fleet Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Fleet Overview</CardTitle>
-          <CardDescription>
-            Current status of all fleets under management
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {fleets.map((fleet) => {
-              const fleetShipOwners = shipOwners.filter(owner => 
-                owner.assignedFleets.includes(fleet.id)
-              );
-              
-              return (
-                <FleetCard
-                  key={fleet.id}
-                  fleet={fleet}
-                  shipOwners={fleetShipOwners}
-                  showWaterAnalysis={false}
-                />
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
