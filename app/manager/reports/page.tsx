@@ -4,17 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { FileText, Download, Calendar, Ship, AlertCircle } from "lucide-react"
 import { useState } from "react"
 import { 
   ships, 
   fleets,
-  generateMonthlyReport,
-  generateAIComment,
-  historicalWaterAnalysisData,
   waterAnalysisData
 } from "@/lib/mock-data"
+import { MonthlyReportCard } from "@/components/reports/monthly-report-card"
 
 export default function ManagerReportsPage() {
   const [selectedShip, setSelectedShip] = useState<string>("1")
@@ -23,33 +20,7 @@ export default function ManagerReportsPage() {
   
   const ship = ships.find(s => s.id === selectedShip)
   const fleet = fleets.find(f => f.id === ship?.fleetId)
-  const reportData = generateMonthlyReport(selectedShip, selectedMonth, selectedYear)
   const currentAnalysis = waterAnalysisData[selectedShip as keyof typeof waterAnalysisData]
-  
-  const getDayColor = (value: number | null, parameter: string) => {
-    if (!value) return "bg-gray-50"
-    
-    switch (parameter) {
-      case "nitrite":
-        if (value >= 1000 && value <= 2400) return "bg-green-100"
-        if (value > 2400) return "bg-red-100"
-        return "bg-yellow-100"
-      case "chloride":
-        if (value <= 50) return "bg-green-100"
-        if (value > 50 && value <= 80) return "bg-yellow-100"
-        return "bg-red-100"
-      case "pH":
-        if (value >= 8.3 && value <= 10) return "bg-green-100"
-        if (value > 10 && value <= 11) return "bg-yellow-100"
-        return "bg-red-100"
-      case "totalHardness":
-        if (value <= 180) return "bg-green-100"
-        if (value > 180 && value <= 200) return "bg-yellow-100"
-        return "bg-red-100"
-      default:
-        return "bg-gray-50"
-    }
-  }
   
   const getStatusColor = (status: string | null) => {
     switch (status) {
@@ -176,147 +147,12 @@ export default function ManagerReportsPage() {
       )}
 
       {/* Monthly Analysis Report */}
-      {reportData && (
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              Monthly Water Analysis Report - {new Date(parseInt(selectedYear), parseInt(selectedMonth) - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-            </CardTitle>
-            <CardDescription>
-              Historical water analysis data with AI insights for {reportData.shipName}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table className="min-w-full border-collapse border border-gray-300 text-xs">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="border border-gray-300 font-bold text-xs sticky left-0 bg-white z-10 min-w-[140px]">Parameter</TableHead>
-                    {Array.from({length: 31}, (_, i) => i + 1).map(day => (
-                      <TableHead key={day} className="border border-gray-300 text-center font-bold text-xs w-[30px] p-1">
-                        {day}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {/* Nitrite Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-xs sticky left-0 bg-white z-10 p-2">Nitrite (ppm)</TableCell>
-                    {Array.from({length: 31}, (_, i) => {
-                      const dayData = reportData.data.find(d => d.day === i + 1)
-                      return (
-                        <TableCell key={i + 1} className={`border border-gray-300 text-center text-xs p-1 ${getDayColor(dayData?.nitrite || null, "nitrite")}`}>
-                          {dayData?.nitrite || ""}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                  
-                  {/* Chemical Addition Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-xs sticky left-0 bg-white z-10 p-2">Rocor NB Liquid (Lt)</TableCell>
-                    {Array.from({length: 31}, (_, i) => {
-                      const dayData = reportData.data.find(d => d.day === i + 1)
-                      return (
-                        <TableCell key={i + 1} className="border border-gray-300 text-center text-xs p-1">
-                          {dayData?.chemicalAddition || ""}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                  
-                  {/* AI Comments Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-red-600 text-xs sticky left-0 bg-white z-10 p-2">AI Comments</TableCell>
-                    <TableCell colSpan={31} className="border border-gray-300 text-xs text-red-600 p-2">
-                      {currentAnalysis ? generateAIComment("nitrite", currentAnalysis.analyses.nitrite.value, currentAnalysis.analyses.nitrite.status) : ""}
-                    </TableCell>
-                  </TableRow>
-                  
-                  {/* Spacer Row */}
-                  <TableRow>
-                    <TableCell colSpan={32} className="border-0 h-2"></TableCell>
-                  </TableRow>
-                  
-                  {/* Chloride Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-xs sticky left-0 bg-white z-10 p-2">Chloride (ppm)</TableCell>
-                    {Array.from({length: 31}, (_, i) => {
-                      const dayData = reportData.data.find(d => d.day === i + 1)
-                      return (
-                        <TableCell key={i + 1} className={`border border-gray-300 text-center text-xs p-1 ${getDayColor(dayData?.chloride || null, "chloride")}`}>
-                          {dayData?.chloride || ""}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                  
-                  {/* AI Comments Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-red-600 text-xs sticky left-0 bg-white z-10 p-2">AI Comments</TableCell>
-                    <TableCell colSpan={31} className="border border-gray-300 text-xs text-red-600 p-2">
-                      {currentAnalysis ? generateAIComment("chloride", currentAnalysis.analyses.chloride.value, currentAnalysis.analyses.chloride.status) : ""}
-                    </TableCell>
-                  </TableRow>
-                  
-                  {/* Spacer Row */}
-                  <TableRow>
-                    <TableCell colSpan={32} className="border-0 h-2"></TableCell>
-                  </TableRow>
-                  
-                  {/* pH Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-xs sticky left-0 bg-white z-10 p-2">pH</TableCell>
-                    {Array.from({length: 31}, (_, i) => {
-                      const dayData = reportData.data.find(d => d.day === i + 1)
-                      return (
-                        <TableCell key={i + 1} className={`border border-gray-300 text-center text-xs p-1 ${getDayColor(dayData?.pH || null, "pH")}`}>
-                          {dayData?.pH || ""}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                  
-                  {/* AI Comments Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-red-600 text-xs sticky left-0 bg-white z-10 p-2">AI Comments</TableCell>
-                    <TableCell colSpan={31} className="border border-gray-300 text-xs text-red-600 p-2">
-                      {currentAnalysis ? generateAIComment("pH", currentAnalysis.analyses.pH.value, currentAnalysis.analyses.pH.status) : ""}
-                    </TableCell>
-                  </TableRow>
-                  
-                  {/* Spacer Row */}
-                  <TableRow>
-                    <TableCell colSpan={32} className="border-0 h-2"></TableCell>
-                  </TableRow>
-                  
-                  {/* Total Hardness Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-xs sticky left-0 bg-white z-10 p-2">Total Hardness (ppm CaCO₃)</TableCell>
-                    {Array.from({length: 31}, (_, i) => {
-                      const dayData = reportData.data.find(d => d.day === i + 1)
-                      return (
-                        <TableCell key={i + 1} className={`border border-gray-300 text-center text-xs p-1 ${getDayColor(dayData?.totalHardness || null, "totalHardness")}`}>
-                          {dayData?.totalHardness || ""}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                  
-                  {/* AI Comments Row */}
-                  <TableRow>
-                    <TableCell className="border border-gray-300 font-medium text-red-600 text-xs sticky left-0 bg-white z-10 p-2">AI Comments</TableCell>
-                    <TableCell colSpan={31} className="border border-gray-300 text-xs text-red-600 p-2">
-                      {currentAnalysis ? generateAIComment("totalHardness", currentAnalysis.analyses.totalHardness.value, currentAnalysis.analyses.totalHardness.status) : ""}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <MonthlyReportCard 
+        selectedShip={selectedShip}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        shipName={ship?.name || "Unknown Ship"}
+      />
 
       {/* Current Alerts */}
       {currentAnalysis?.alerts && currentAnalysis.alerts.length > 0 && (
