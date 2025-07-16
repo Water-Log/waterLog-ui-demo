@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Search, User } from "lucide-react"
+import { Bell, Search, User, Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -16,9 +16,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import { getCurrentUserWithCompany } from "@/lib/mock-data"
+import { useTheme } from "next-themes"
 
 export function Header() {
   const { user, company } = getCurrentUserWithCompany()
+  const { theme, setTheme } = useTheme()
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
@@ -57,6 +59,17 @@ export function Header() {
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        {/* Dark Mode Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        >
+          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+
         {/* Notifications */}
         <Button variant="ghost" size="icon">
           <Bell className="h-4 w-4" />
