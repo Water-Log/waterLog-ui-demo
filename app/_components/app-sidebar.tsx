@@ -31,38 +31,38 @@ import { SidebarSettings } from "@/components/sidebar-settings"
 // Menu items for shipowners
 const shipOwnerItems = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
+    title: "Shipowner Dashboard",
+    url: "/shipowner",
     icon: Home,
   },
   {
     title: "Ships",
-    url: "/ships",
+    url: "/shipowner/ships",
     icon: Ship,
   },
   {
     title: "Crew",
-    url: "/crew",
+    url: "/shipowner/crew",
     icon: Users,
   },
   {
     title: "Analytics",
-    url: "/analytics",
+    url: "/shipowner/analytics",
     icon: BarChart3,
   },
   {
     title: "Schedules",
-    url: "/schedules",
+    url: "/shipowner/schedules",
     icon: Calendar,
   },
   {
     title: "Reports",
-    url: "/reports",
+    url: "/shipowner/reports",
     icon: FileText,
   },
   {
     title: "Tracking",
-    url: "/tracking",
+    url: "/shipowner/tracking",
     icon: MapPin,
   },
 ]
