@@ -12,6 +12,7 @@ import {
   Building2,
   Beaker,
   History,
+  Droplets,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 
@@ -114,6 +115,11 @@ const technicianItems = [
     title: "Water Analysis",
     url: "/technician/water-analysis",
     icon: Beaker,
+  },
+  {
+    title: "Chemical Additions",
+    url: "/technician/chemicals",
+    icon: Droplets,
   },
   {
     title: "Reports",

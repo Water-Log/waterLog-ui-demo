@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Ship, AlertTriangle, CheckCircle, Clock, Beaker, Eye, History, Calendar } from "lucide-react"
+import { Ship, AlertTriangle, CheckCircle, Clock, Beaker, Eye, History, Calendar, Droplets } from "lucide-react"
 import { ships, waterAnalysisData, technicians } from "@/lib/mock-data"
 import { useState } from "react"
+import Link from "next/link"
 
 export default function TechnicianShipsPage() {
   const [showHistory, setShowHistory] = useState(false)
@@ -143,14 +144,24 @@ export default function TechnicianShipsPage() {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                  <Button className="flex items-center gap-2">
-                    <Beaker className="h-4 w-4" />
-                    Add Analysis
-                  </Button>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <Eye className="h-4 w-4" />
-                    View Details
-                  </Button>
+                  <Link href="/technician/water-analysis">
+                    <Button className="flex items-center gap-2">
+                      <Beaker className="h-4 w-4" />
+                      Add Analysis
+                    </Button>
+                  </Link>
+                  <Link href="/technician/chemicals">
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <Droplets className="h-4 w-4" />
+                      Add Chemicals
+                    </Button>
+                  </Link>
+                  <Link href={`/technician/ships/${currentShip.id}`}>
+                    <Button variant="secondary" className="flex items-center gap-2">
+                      <Eye className="h-4 w-4" />
+                      View Details
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>

@@ -3,8 +3,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Ship, AlertTriangle, CheckCircle, Clock, Beaker, FileText, TrendingUp, Eye, History } from "lucide-react"
+import { Ship, AlertTriangle, CheckCircle, Clock, Beaker, FileText, Eye, History, Droplets } from "lucide-react"
 import { ships, waterAnalysisData, technicians } from "@/lib/mock-data"
+import Link from "next/link"
 
 export default function TechnicianPage() {
   // Mock technician data - in real app this would come from authentication
@@ -135,75 +136,81 @@ export default function TechnicianPage() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Common tasks for water analysis management
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Button className="h-16 flex-col">
-                <Beaker className="h-5 w-5 mb-1" />
-                <span className="text-xs">Add Analysis</span>
-              </Button>
-              <Button variant="outline" className="h-16 flex-col">
-                <FileText className="h-5 w-5 mb-1" />
-                <span className="text-xs">View Reports</span>
-              </Button>
-              <Button variant="outline" className="h-16 flex-col">
-                <TrendingUp className="h-5 w-5 mb-1" />
-                <span className="text-xs">View Trends</span>
-              </Button>
-              <Button variant="outline" className="h-16 flex-col">
-                <History className="h-5 w-5 mb-1" />
-                <span className="text-xs">History</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Quick Actions and Recent Activity Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Latest actions for {currentShip.name}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <Beaker className="h-5 w-5 text-blue-600" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Water analysis completed</p>
-                  <p className="text-xs text-muted-foreground">{currentShipAnalysis.lastAnalysisDate}</p>
+                      {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Latest actions for {currentShip.name}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Beaker className="h-5 w-5 text-blue-600" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Water analysis completed</p>
+                    <p className="text-xs text-muted-foreground">{currentShipAnalysis.lastAnalysisDate}</p>
+                  </div>
+                  <Badge variant="outline">Complete</Badge>
                 </div>
-                <Badge variant="outline">Complete</Badge>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Chemical addition recorded</p>
-                  <p className="text-xs text-muted-foreground">{currentShipAnalysis.lastChemicalAddition}</p>
+                
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Chemical addition recorded</p>
+                    <p className="text-xs text-muted-foreground">{currentShipAnalysis.lastChemicalAddition}</p>
+                  </div>
+                  <Badge variant="outline">Recorded</Badge>
                 </div>
-                <Badge variant="outline">Recorded</Badge>
-              </div>
 
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <Clock className="h-5 w-5 text-orange-600" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Next analysis scheduled</p>
-                  <p className="text-xs text-muted-foreground">{currentShipAnalysis.nextAnalysisDate}</p>
+                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Clock className="h-5 w-5 text-orange-600" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Next analysis scheduled</p>
+                    <p className="text-xs text-muted-foreground">{currentShipAnalysis.nextAnalysisDate}</p>
+                  </div>
+                  <Badge variant="outline">Scheduled</Badge>
                 </div>
-                <Badge variant="outline">Scheduled</Badge>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>
+                Common tasks for water analysis management
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <Link href="/technician/water-analysis">
+                  <Button className="h-16 flex-col w-full">
+                    <Beaker className="h-5 w-5 mb-1" />
+                    <span className="text-xs">Add Analysis</span>
+                  </Button>
+                </Link>
+                <Link href="/technician/chemicals">
+                  <Button variant="outline" className="h-16 flex-col w-full">
+                    <Droplets className="h-5 w-5 mb-1" />
+                    <span className="text-xs">Add Chemicals</span>
+                  </Button>
+                </Link>
+                <Link href="/technician/reports">
+                  <Button variant="outline" className="h-16 flex-col w-full">
+                    <FileText className="h-5 w-5 mb-1" />
+                    <span className="text-xs">View Reports</span>
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
