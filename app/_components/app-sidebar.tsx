@@ -10,6 +10,8 @@ import {
   FileText,
   MapPin,
   Building2,
+  Beaker,
+  History,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 
@@ -96,10 +98,41 @@ const managerItems = [
   },
 ]
 
+// Menu items for technicians
+const technicianItems = [
+  {
+    title: "Technician Dashboard",
+    url: "/technician",
+    icon: Home,
+  },
+  {
+    title: "Ships",
+    url: "/technician/ships",
+    icon: Ship,
+  },
+  {
+    title: "Water Analysis",
+    url: "/technician/water-analysis",
+    icon: Beaker,
+  },
+  {
+    title: "Reports",
+    url: "/technician/reports",
+    icon: FileText,
+  }
+]
+
 export function AppSidebar() {
   const pathname = usePathname()
   const isManagerRoute = pathname?.startsWith('/manager')
-  const items = isManagerRoute ? managerItems : shipOwnerItems
+  const isTechnicianRoute = pathname?.startsWith('/technician')
+  
+  let items = shipOwnerItems
+  if (isManagerRoute) {
+    items = managerItems
+  } else if (isTechnicianRoute) {
+    items = technicianItems
+  }
 
   return (
     <Sidebar 

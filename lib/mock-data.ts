@@ -43,7 +43,8 @@ export const ships = [
     lastInspection: "2024-01-15",
     nextMaintenance: "2024-03-20",
     image: "/cargo-ship.jpg",
-    fleetId: "1"
+    fleetId: "1",
+    technicianId: "tech-001"
   },
   {
     id: "2",
@@ -59,7 +60,8 @@ export const ships = [
     lastInspection: "2024-02-10",
     nextMaintenance: "2024-04-15",
     image: "/cargo-ship.jpg",
-    fleetId: "2"
+    fleetId: "2",
+    technicianId: "tech-002"
   },
   {
     id: "3",
@@ -75,7 +77,8 @@ export const ships = [
     lastInspection: "2024-01-20",
     nextMaintenance: "2024-02-28",
     image: "/cargo-ship.jpg",
-    fleetId: "2"
+    fleetId: "2",
+    technicianId: "tech-001"
   },
   {
     id: "4",
@@ -91,7 +94,8 @@ export const ships = [
     lastInspection: "2024-02-05",
     nextMaintenance: "2024-05-10",
     image: "/cargo-ship.jpg",
-    fleetId: "1"
+    fleetId: "1",
+    technicianId: "tech-001"
   },
   {
     id: "5",
@@ -107,7 +111,8 @@ export const ships = [
     lastInspection: "2024-01-30",
     nextMaintenance: "2024-04-01",
     image: "/cargo-ship.jpg",
-    fleetId: "3"
+    fleetId: "3",
+    technicianId: "tech-003"
   },
   {
     id: "6",
@@ -123,7 +128,8 @@ export const ships = [
     lastInspection: "2024-02-12",
     nextMaintenance: "2024-06-01",
     image: "/cargo-ship.jpg",
-    fleetId: "4"
+    fleetId: "4",
+    technicianId: "tech-002"
   }
 ]
 
@@ -1085,60 +1091,116 @@ export const aiComments = {
 // Chemical additions data for reports
 export const chemicalAdditions = {
   "1": [
-    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 60, unit: "Lt" },
-    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 44, unit: "Lt" },
-    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 32, unit: "Lt" },
+    { date: "2024-07-01", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-03", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-05", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-07", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-10", chemical: "Rocor NB Liquid", amount: 60, unit: "Lt" },
+    { date: "2024-07-12", chemical: "Rocor NB Liquid", amount: 44, unit: "Lt" },
+    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 32, unit: "Lt" },
   ],
   "2": [
-    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 45, unit: "Lt" },
-    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 52, unit: "Lt" },
-    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 68, unit: "Lt" },
-    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 75, unit: "Lt" },
-    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 80, unit: "Lt" },
-    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 85, unit: "Lt" },
-    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 90, unit: "Lt" },
+    { date: "2024-07-01", chemical: "Rocor NB Liquid", amount: 45, unit: "Lt" },
+    { date: "2024-07-03", chemical: "Rocor NB Liquid", amount: 52, unit: "Lt" },
+    { date: "2024-07-05", chemical: "Rocor NB Liquid", amount: 68, unit: "Lt" },
+    { date: "2024-07-07", chemical: "Rocor NB Liquid", amount: 75, unit: "Lt" },
+    { date: "2024-07-10", chemical: "Rocor NB Liquid", amount: 80, unit: "Lt" },
+    { date: "2024-07-12", chemical: "Rocor NB Liquid", amount: 85, unit: "Lt" },
+    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 90, unit: "Lt" },
   ],
   "3": [
-    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
-    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 40, unit: "Lt" },
-    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 65, unit: "Lt" },
-    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 85, unit: "Lt" },
-    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 95, unit: "Lt" },
-    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 100, unit: "Lt" },
-    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 105, unit: "Lt" },
+    { date: "2024-07-01", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-03", chemical: "Rocor NB Liquid", amount: 40, unit: "Lt" },
+    { date: "2024-07-05", chemical: "Rocor NB Liquid", amount: 65, unit: "Lt" },
+    { date: "2024-07-07", chemical: "Rocor NB Liquid", amount: 85, unit: "Lt" },
+    { date: "2024-07-10", chemical: "Rocor NB Liquid", amount: 95, unit: "Lt" },
+    { date: "2024-07-12", chemical: "Rocor NB Liquid", amount: 100, unit: "Lt" },
+    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 105, unit: "Lt" },
   ],
   "4": [
-    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 35, unit: "Lt" },
-    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 30, unit: "Lt" },
-    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-01", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-03", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-05", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-07", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-10", chemical: "Rocor NB Liquid", amount: 35, unit: "Lt" },
+    { date: "2024-07-12", chemical: "Rocor NB Liquid", amount: 30, unit: "Lt" },
+    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
   ],
   "5": [
-    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 20, unit: "Lt" },
-    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
-    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 40, unit: "Lt" },
-    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 45, unit: "Lt" },
-    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 50, unit: "Lt" },
-    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 55, unit: "Lt" },
-    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 60, unit: "Lt" },
+    { date: "2024-07-01", chemical: "Rocor NB Liquid", amount: 20, unit: "Lt" },
+    { date: "2024-07-03", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-05", chemical: "Rocor NB Liquid", amount: 40, unit: "Lt" },
+    { date: "2024-07-07", chemical: "Rocor NB Liquid", amount: 45, unit: "Lt" },
+    { date: "2024-07-10", chemical: "Rocor NB Liquid", amount: 50, unit: "Lt" },
+    { date: "2024-07-12", chemical: "Rocor NB Liquid", amount: 55, unit: "Lt" },
+    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 60, unit: "Lt" },
   ],
   "6": [
-    { date: "2024-07-02", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-04", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-06", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-08", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
-    { date: "2024-07-11", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
-    { date: "2024-07-13", chemical: "Rocor NB Liquid", amount: 20, unit: "Lt" },
-    { date: "2024-07-15", chemical: "Rocor NB Liquid", amount: 18, unit: "Lt" },
+    { date: "2024-07-01", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-03", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-05", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-07", chemical: "Rocor NB Liquid", amount: 0, unit: "Lt" },
+    { date: "2024-07-10", chemical: "Rocor NB Liquid", amount: 25, unit: "Lt" },
+    { date: "2024-07-12", chemical: "Rocor NB Liquid", amount: 20, unit: "Lt" },
+    { date: "2024-07-14", chemical: "Rocor NB Liquid", amount: 18, unit: "Lt" },
   ]
 }
+
+// Technician data
+export const technicians = [
+  {
+    id: "tech-001",
+    name: "John Smith",
+    email: "john.smith@waterlog.com",
+    phone: "+1-555-0123",
+    department: "Water Analysis",
+    status: "Active",
+    hiredDate: "2022-03-15",
+    certifications: ["Water Quality Analysis", "Maritime Safety"],
+    currentShip: "1", // Currently assigned to MV Atlantic Pioneer
+    assignmentHistory: [
+      { shipId: "4", shipName: "MV Pacific Voyager", startDate: "2022-03-15", endDate: "2023-08-20" },
+      { shipId: "3", shipName: "MV Baltic Explorer", startDate: "2023-08-21", endDate: "2024-06-10" },
+      { shipId: "1", shipName: "MV Atlantic Pioneer", startDate: "2024-06-11", endDate: null } // Current
+    ],
+    experience: "5 years",
+    location: "Rotterdam Office"
+  },
+  {
+    id: "tech-002",
+    name: "Sarah Johnson",
+    email: "sarah.johnson@waterlog.com",
+    phone: "+1-555-0124",
+    department: "Water Analysis",
+    status: "Active",
+    hiredDate: "2021-07-20",
+    certifications: ["Water Quality Analysis", "Chemical Treatment", "Environmental Safety"],
+    currentShip: "2", // Currently assigned to MV Mediterranean Star
+    assignmentHistory: [
+      { shipId: "6", shipName: "MV Indian Ocean", startDate: "2021-07-20", endDate: "2024-01-15" },
+      { shipId: "2", shipName: "MV Mediterranean Star", startDate: "2024-01-16", endDate: null } // Current
+    ],
+    experience: "7 years",
+    location: "Singapore Office"
+  },
+  {
+    id: "tech-003",
+    name: "Erik Larsson",
+    email: "erik.larsson@waterlog.com",
+    phone: "+47-555-0125",
+    department: "Water Analysis",
+    status: "Active",
+    hiredDate: "2023-01-10",
+    certifications: ["Water Quality Analysis", "Ice Water Analysis"],
+    currentShip: "5", // Currently assigned to MV Arctic Breaker
+    assignmentHistory: [
+      { shipId: "5", shipName: "MV Arctic Breaker", startDate: "2023-01-10", endDate: null } // Current
+    ],
+    experience: "3 years",
+    location: "Oslo Office"
+  }
+]
+
 
 // Helper function to generate AI comments based on parameter status
 export const generateAIComment = (parameter: string, value: number, status: string) => {
