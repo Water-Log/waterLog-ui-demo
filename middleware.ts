@@ -38,65 +38,23 @@ const planForbidden: Record<string, RegExp[]> = {
 const PUBLIC_PATHS = [
   /^\/$/, // landing page
   /^\/login/,
-  /^\/register/,
-  /^\/api\/login/,
-  /^\/api\/register/,
+  /^\/create-account/,
+  /^\/signup/,
+  /^\/api\/auth\/login/,
+  /^\/api\/auth\/register/,
   /^\/api\/public/, // any other public APIs
 ]
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (request.nextUrl.pathname.startsWith('/_next') || request.nextUrl.pathname.startsWith('/')) {
-    return NextResponse.next();
-  }
-
-  // Skip public paths
-  if (PUBLIC_PATHS.some((re) => re.test(pathname))) {
+  // Skip public paths and API routes
+  if (PUBLIC_PATHS.some((re) => re.test(pathname)) || pathname.startsWith('/api/')) {
     return NextResponse.next()
   }
 
-  // Extract token from cookies – adjust cookie name if you use different
-  const token = request.cookies.get('token')?.value
-
-  if (!token) {
-    // Not authenticated → redirect to login
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    url.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(url)
-  }
-
-  // Decode JWT payload – *no signature verification* (Edge-friendly)
-  const payload = decodeJwt(token)
-  if (!payload) {
-    // Invalid token – clear cookie and send to login
-    const res = NextResponse.redirect(new URL('/login', request.url))
-    res.cookies.delete('token')
-    return res
-  }
-
-  const role: Role | undefined = payload.role as Role | undefined
-  const plan: string | undefined = payload.plan as string | undefined
-
-  // Role-based restriction
-  if (role) {
-    const forbiddenPatterns = roleForbidden[role] || []
-    const isForbidden = forbiddenPatterns.some((re) => re.test(pathname))
-    if (isForbidden) {
-      return NextResponse.redirect(new URL('/unauthorized', request.url))
-    }
-  }
-
-  // Plan-based restriction (only if plan present and mapping exists)
-  if (plan && planForbidden[plan]) {
-    const isForbidden = planForbidden[plan].some((re) => re.test(pathname))
-    if (isForbidden) {
-      return NextResponse.redirect(new URL('/upgrade', request.url))
-    }
-  }
-
-  // All good → continue
+  // For now, let client-side handle authentication
+  // The auth provider will handle redirects based on authentication state
   return NextResponse.next()
 }
 

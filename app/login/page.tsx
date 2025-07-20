@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -7,8 +9,53 @@ import { Anchor, Ship, Waves } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import * as React from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "../_providers/auth"
+import { Role } from "@/schemas/role"
 
 export default function LoginPage() {
+  const router = useRouter()
+  const { login, loading, error } = useAuth()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
+  const [localError, setLocalError] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLocalError("")
+
+    if (!email || !password) {
+      setLocalError("Please fill in all fields")
+      return
+    }
+
+    try {
+      const user = await login(email, password)
+      // Successful login - redirect based on user role
+      if (user) {
+        switch (user.role) {
+          case Role.Manager:
+            router.push('/manager')
+            break
+          case Role.Shipholder:
+            router.push('/shipowner')
+            break
+          case Role.Technician:
+            router.push('/technician')
+            break
+          default:
+            router.push('/manager') // fallback
+        }
+      }
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : 'Login failed')
+    }
+  }
+
+  const displayError = localError || error
+
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
       {/* Background Image with Overlay */}
@@ -43,53 +90,85 @@ export default function LoginPage() {
               Sign in to access your fleet dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <div className="text-slate-200">
-                <span className="text-sm font-medium leading-none">Email Address</span>
-              </div>
-              <Input
-                type="email"
-                placeholder="captain@shipping.com"
-                className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <div className="text-slate-200">
-                <span className="text-sm font-medium leading-none">Password</span>
-              </div>
-              <Input
-                type="password"
-                className="bg-slate-700/50 border-slate-600 text-white focus:border-blue-500"
-                required
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox />
-                  <span className="text-sm text-slate-300">Remember me</span>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4">
+              {/* Error Display */}
+              {displayError && (
+                <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-md">
+                  <p className="text-red-300 text-sm">{displayError}</p>
                 </div>
+              )}
+              
+              <div className="space-y-2">
+                <div className="text-slate-200">
+                  <span className="text-sm font-medium leading-none">Email Address</span>
+                </div>
+                <Input
+                  type="email"
+                  placeholder="captain@shipping.com"
+                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                />
               </div>
-              <Button variant="link" className="text-blue-400 hover:text-blue-300 p-0 h-auto">
-                Forgot password?
+              <div className="space-y-2">
+                <div className="text-slate-200">
+                  <span className="text-sm font-medium leading-none">Password</span>
+                </div>
+                <Input
+                  type="password"
+                  className="bg-slate-700/50 border-slate-600 text-white focus:border-blue-500"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      disabled={loading}
+                    />
+                    <span className="text-sm text-slate-300">Remember me</span>
+                  </div>
+                </div>
+                <Button variant="link" className="text-blue-400 hover:text-blue-300 p-0 h-auto" disabled={loading}>
+                  Forgot password?
+                </Button>
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col space-y-4">
+              <Button 
+                type="submit" 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={loading}
+              >
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                    Signing In...
+                  </div>
+                ) : (
+                  <>
+                    <Anchor className="w-4 h-4 mr-2" />
+                    Sign In
+                  </>
+                )}
               </Button>
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-              <Anchor className="w-4 h-4 mr-2" />
-              Sign In
-            </Button>
-            <div className="flex items-center justify-center space-x-1 text-sm text-slate-400">
-              <span>Don't have an account?</span>
-              <Link href="/register" className="text-blue-400 hover:text-blue-300">
-                Register
-              </Link>
-            </div>
-            <div className="text-center text-sm text-slate-400">Need access? Contact your fleet administrator</div>
-          </CardFooter>
+              <div className="flex items-center justify-center space-x-1 text-sm text-slate-400">
+                <span>Don't have an account?</span>
+                <Link href="/create-account" className="text-blue-400 hover:text-blue-300">
+                  Register
+                </Link>
+              </div>
+              <div className="text-center text-sm text-slate-400">Need access? Contact your fleet administrator</div>
+            </CardFooter>
+          </form>
         </Card>
 
         {/* Footer */}

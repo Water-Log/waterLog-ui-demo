@@ -9,12 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Image from "next/image"
 import { useState } from "react"
 import { countries } from "@/lib/mock-data"
+import { useRouter } from "next/navigation"
 
 // Icons
 import { Check } from "lucide-react"
 import { useLanguage, Language } from "../_providers/language"
+import { useAuth } from "../_providers/auth"
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const { register } = useAuth()
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedCountry, setSelectedCountry] = useState("")
   const [companyName, setCompanyName] = useState("")
@@ -24,6 +28,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [fullName, setFullName] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   
   // NEW: language context
   const { language, setLanguage, t } = useLanguage()
@@ -34,12 +40,34 @@ export default function RegisterPage() {
   
   const totalSteps = 4
   
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
+      setError("") // Clear any previous errors
     } else {
-      // TODO: Implement the logic to create the account
-      console.log("Account created")
+      // Create account
+      setIsLoading(true)
+      setError("")
+      
+      try {
+        await register({
+          companyName,
+          companyEmail,
+          selectedCountry,
+          taxNumber,
+          billingAddress,
+          email,
+          password,
+          fullName
+        })
+
+        // Account created successfully and user is logged in, redirect to manager page
+        router.push('/manager')
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
   
@@ -158,6 +186,13 @@ export default function RegisterPage() {
               ))}
             </div>
           </div>
+          
+          {/* Error display */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          )}
           
           {currentStep === 1 && (
             <div>
@@ -304,6 +339,7 @@ export default function RegisterPage() {
             <Button 
               onClick={handleNext}
               disabled={
+                isLoading ||
                 (currentStep === 1 && (!companyName || !companyEmail)) ||
                 (currentStep === 2 && !selectedCountry) ||
                 (currentStep === 3 && (!taxNumber || !billingAddress)) ||
@@ -311,7 +347,14 @@ export default function RegisterPage() {
               }
               className="bg-green-500 hover:bg-green-600 text-white"
             >
-              {currentStep === totalSteps ? t('button.complete') : t('button.continue')}
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Creating Account...</span>
+                </div>
+              ) : (
+                currentStep === totalSteps ? t('button.complete') : t('button.continue')
+              )}
             </Button>
           </div>
         </div>

@@ -26,7 +26,8 @@ export interface AuthUser {
 interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser>;
+  register: (userData: any) => Promise<void>;
   logout: () => void;
   hasRole: (...roles: Role[]) => boolean;
   loading: boolean;
@@ -86,7 +87,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,20 +96,55 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       if (!res.ok) {
-        const message = (await res.json())?.message ?? 'Login failed';
-        throw new Error(message);
+        const data = await res.json();
+        throw new Error(data.error || 'Login failed');
       }
 
       const { token: receivedToken, user: receivedUser } = await res.json();
       setUser(receivedUser);
       setToken(receivedToken);
       storeSession({ token: receivedToken, user: receivedUser });
+      
+      // Return the user data for role-based redirects
+      return receivedUser;
     } catch (err: any) {
       setError(err.message ?? 'Unknown error');
+      throw err;
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const register = useCallback(async (userData: any) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      const { token: receivedToken, user: receivedUser } = await res.json();
+      
+      // Set user and token directly from registration response
+      setUser(receivedUser);
+      setToken(receivedToken);
+      storeSession({ token: receivedToken, user: receivedUser });
+    } catch (err: any) {
+      setError(err.message ?? 'Unknown error');
+      throw err; // Re-throw to handle in the component
+    } finally {
+      setLoading(false);
+    }
+  }, [login]);
 
   const logout = useCallback(() => {
     setUser(null);
@@ -128,6 +164,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     user,
     isAuthenticated: Boolean(user),
     login,
+    register,
     logout,
     hasRole,
     loading,
