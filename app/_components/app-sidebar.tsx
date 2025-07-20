@@ -53,9 +53,9 @@ const shipOwnerItems = [
     icon: BarChart3,
   },
   {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
+    title: "Reports",
+    url: "/shipowner/reports",
+    icon: FileText,
   },
 ]
 
@@ -82,9 +82,9 @@ const managerItems = [
     icon: BarChart3,
   },
   {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
+    title: "Reports",
+    url: "/manager/reports",
+    icon: FileText,
   },
 ]
 
@@ -111,9 +111,9 @@ const technicianItems = [
     icon: Droplets,
   },
   {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
+    title: "Reports",
+    url: "/technician/reports",
+    icon: FileText,
   }
 ]
 
