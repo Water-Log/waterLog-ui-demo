@@ -10,6 +10,9 @@ import {
   WaterAnalysisData,
   ChemicalAdditionData
 } from "@/components/crew"
+import { Button } from "@/components/ui/button"
+import { PlusCircle } from "lucide-react"
+import { AddTechnicianModal } from "@/components/crew/add-technician-modal"
 
 // Assume we're logged in as the first ship owner
 const currentShipOwnerId = "owner-1"
@@ -20,6 +23,7 @@ export default function CrewPage() {
   const [departmentFilter, setDepartmentFilter] = useState("all")
   const [historyModalOpen, setHistoryModalOpen] = useState(false)
   const [selectedTechnician, setSelectedTechnician] = useState<Technician | null>(null)
+  const [addTechnicianModalOpen, setAddTechnicianModalOpen] = useState(false)
 
   // Get the current ship owner
   const currentShipOwner = shipOwners.find(owner => owner.id === currentShipOwnerId)
@@ -134,6 +138,21 @@ export default function CrewPage() {
     return result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }
 
+  const handleAddTechnician = (technicianData: {
+    fullName: string
+    phoneNumber: string
+    email: string
+    country: string
+    status: string
+    department: string
+  }) => {
+    // In a real app, this would send data to an API
+    console.log("Adding new technician:", technicianData)
+    
+    // For now, just show an alert to simulate success
+    alert(`Technician ${technicianData.fullName} added successfully!`)
+  }
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -143,6 +162,13 @@ export default function CrewPage() {
             Manage technicians working on your fleet's ships
           </p>
         </div>
+        <Button 
+          onClick={() => setAddTechnicianModalOpen(true)} 
+          className="flex items-center gap-2"
+        >
+          <PlusCircle className="h-4 w-4" />
+          Add Technician
+        </Button>
       </div>
 
       {/* Filters and Search */}
@@ -175,6 +201,13 @@ export default function CrewPage() {
         getShipName={getShipName}
         getWaterAnalysisForTechnician={getWaterAnalysisForTechnician}
         getChemicalAdditionsForTechnician={getChemicalAdditionsForTechnician}
+      />
+      
+      {/* Add Technician Modal */}
+      <AddTechnicianModal
+        isOpen={addTechnicianModalOpen}
+        onClose={() => setAddTechnicianModalOpen(false)}
+        onAdd={handleAddTechnician}
       />
     </div>
   )

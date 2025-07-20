@@ -1,4 +1,5 @@
 export * from "./technician-filters"
 export * from "./technician-table"
 export * from "./technician-history-modal"
+export * from "./add-technician-modal"
 export * from "./types"
