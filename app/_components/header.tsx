@@ -39,10 +39,14 @@ export function Header() {
     <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 relative z-50">
       {/* Logo */}
       <div className="flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground">
-          <Image src="/logo.png" alt="WaterLog" width={32} height={32} />
+        <div className="flex h-12 w-auto items-center justify-center rounded">
+          <Image 
+            src={theme === "dark" ? "/header-logo-dark.png" : "/header-logo-light.png"} 
+            alt="WaterLog" 
+            width={120} 
+            height={48} 
+          />
         </div>
-        <span className="font-semibold">WaterLog</span>
       </div>
 
       {/* Search */}
