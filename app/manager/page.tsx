@@ -1,7 +1,10 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3, Ship, Users, Building2, TrendingUp, UserPlus } from "lucide-react"
 import { fleets, shipOwners, shipsUpdated } from "@/lib/mock-data"
 import { FleetCard } from "@/components/fleet-card"
+import { AddShipOwnerButton } from "@/components/ui/add-ship-owner-button"
 
 export default function ManagerPage() {
   return (
@@ -133,10 +136,19 @@ export default function ManagerPage() {
               <div className="text-xs text-muted-foreground">Set up a new fleet for the company</div>
             </button>
             
-            <button className="w-full text-left p-3 rounded-md border border-border hover:bg-accent transition-colors">
-              <div className="font-medium">Assign Ship Owner</div>
-              <div className="text-xs text-muted-foreground">Connect ship owners to fleets</div>
-            </button>
+            <div className="w-full p-3 rounded-md border border-border hover:bg-accent transition-colors">
+              <div className="flex items-center">
+                <UserPlus className="h-4 w-4 mr-2" />
+                <AddShipOwnerButton 
+                  id="add-ship-owner-quick-action"
+                  variant="ghost" 
+                  hideIcon={true}
+                  className="p-0 font-medium h-auto"
+                  onShipOwnerAdd={(data) => console.log("Ship owner added:", data)}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">Add a new ship owner to the system</div>
+            </div>
             
             <button className="w-full text-left p-3 rounded-md border border-border hover:bg-accent transition-colors">
               <div className="font-medium">Fleet Performance Report</div>

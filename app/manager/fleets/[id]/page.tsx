@@ -24,7 +24,7 @@ import {
 import Link from "next/link"
 import { fleets, ships, shipOwners, waterAnalysisData, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
 import { notFound } from "next/navigation"
-import { AddShipOwnerButton } from "@/components/ui/add-ship-owner-button"
+import { AssignShipOwnerButton } from "@/components/ui/assign-ship-owner-button"
 import { AssignShipOwnerModal } from "@/components/fleet/assign-ship-owner-modal"
 
 interface FleetDetailPageProps {
@@ -37,8 +37,7 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
   const unwrappedParams = React.use(params)
   const fleet = fleets.find(f => f.id === unwrappedParams.id)
   
-  // Modal state
-  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
+  // No modal state needed as the AssignShipOwnerButton handles it
   
   if (!fleet) {
     notFound()
@@ -144,9 +143,7 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
     }
   }
 
-  const handleAssignShipOwner = () => {
-    setIsAssignModalOpen(true)
-  }
+  // No longer needed as the AssignShipOwnerButton handles opening the modal
 
   const handleOwnerAssignment = (selectedOwnerIds: string[]) => {
     // In a real application, this would make an API call to assign ship owners
@@ -365,7 +362,12 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
                 Ship owners responsible for this fleet
               </CardDescription>
             </div>
-            <AddShipOwnerButton onClick={handleAssignShipOwner} />
+            <AssignShipOwnerButton 
+              fleetId={fleet.id}
+              fleetName={fleet.name}
+              currentlyAssignedOwnerIds={fleetOwners.map(owner => owner.id)}
+              onAssign={handleOwnerAssignment}
+            />
           </div>
         </CardHeader>
         <CardContent>
@@ -392,7 +394,7 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
             <div className="text-center py-8 text-muted-foreground">
               <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p className="text-sm">No ship owners assigned to this fleet yet.</p>
-              <p className="text-xs">Click "Add Ship Owner" to assign someone to this fleet.</p>
+              <p className="text-xs">Click "Assign Ship Owner" to assign someone to this fleet.</p>
             </div>
           )}
         </CardContent>
@@ -533,15 +535,6 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
         </CardContent>
       </Card>
 
-      {/* Assign Ship Owner Modal */}
-      <AssignShipOwnerModal
-        isOpen={isAssignModalOpen}
-        onClose={() => setIsAssignModalOpen(false)}
-        onAssign={handleOwnerAssignment}
-        fleetId={fleet.id}
-        fleetName={fleet.name}
-        currentlyAssignedOwnerIds={fleetOwners.map(owner => owner.id)}
-      />
     </div>
   )
 }
