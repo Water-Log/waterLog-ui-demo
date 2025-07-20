@@ -15,19 +15,45 @@ import {
   CheckCircle, 
   Clock,
   AlertTriangle,
-  Plus,
   Search,
   Filter
 } from "lucide-react"
-import { fleets, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
+import { fleets as initialFleets, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
 import { FleetCard } from "@/components/fleet-card"
-import { useState } from "react"
+import { AddFleetModal } from "@/components/fleet/add-fleet-modal"
+import { useState, useEffect } from "react"
+
+interface Fleet {
+  id: string
+  name: string
+  company: string
+  region: string
+  status: string
+  createdDate: string
+  shipOwners: string[]
+  shipIds: string[]
+  description: string
+  headquarters: string
+  totalShips: number
+  activeVoyages: number
+}
+
+interface NewFleetForm {
+  name: string
+  company: string
+  region: string
+  status: string
+  description: string
+  headquarters: string
+}
 
 export default function FleetsPage() {
+  const [fleets, setFleets] = useState<Fleet[]>(initialFleets)
   const [expandedFleets, setExpandedFleets] = useState<Set<string>>(new Set())
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [regionFilter, setRegionFilter] = useState("all")
+  const [newlyAddedFleetId, setNewlyAddedFleetId] = useState<string | null>(null)
   
   const fleetsWithAnalysis = fleets.map(fleet => ({
     ...fleet,
@@ -51,6 +77,48 @@ export default function FleetsPage() {
   const uniqueStatuses = [...new Set(fleets.map(fleet => fleet.status))]
   const uniqueRegions = [...new Set(fleets.map(fleet => fleet.region))]
 
+  // Generate a unique ID for new fleets
+  const generateFleetId = () => {
+    const maxId = Math.max(...fleets.map(fleet => parseInt(fleet.id))) || 0
+    return (maxId + 1).toString()
+  }
+
+  const handleFleetAdd = (fleetData: NewFleetForm) => {
+    // Create new fleet object with all required fields
+    const newFleet: Fleet = {
+      id: generateFleetId(),
+      name: fleetData.name,
+      company: fleetData.company,
+      region: fleetData.region,
+      status: fleetData.status || "Active",
+      createdDate: new Date().toISOString().split('T')[0], // Today's date
+      shipOwners: [], // Start with empty array
+      shipIds: [], // Start with empty array
+      description: fleetData.description || "",
+      headquarters: fleetData.headquarters || "",
+      totalShips: 0, // Start with 0 ships
+      activeVoyages: 0 // Start with 0 voyages
+    }
+
+    // Add the new fleet to the beginning of the list
+    setFleets(prev => [newFleet, ...prev])
+    
+    // Set this fleet as newly added for highlighting
+    setNewlyAddedFleetId(newFleet.id)
+    
+    // Remove the highlight after 3 seconds
+    setTimeout(() => {
+      setNewlyAddedFleetId(null)
+    }, 3000)
+
+    console.log("New fleet added:", newFleet)
+  }
+
+  // Clear highlight when filters change
+  useEffect(() => {
+    setNewlyAddedFleetId(null)
+  }, [searchTerm, statusFilter, regionFilter])
+
   const toggleFleetExpansion = (fleetId: string) => {
     setExpandedFleets(prev => {
       const newSet = new Set(prev)
@@ -72,10 +140,7 @@ export default function FleetsPage() {
             Monitor cooling water analysis across all fleets for optimal ship performance
           </p>
         </div>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Add Fleet
-        </Button>
+        <AddFleetModal onFleetAdd={handleFleetAdd} />
       </div>
 
       {/* Search and Filters */}
@@ -187,14 +252,22 @@ export default function FleetsPage() {
       <div className="grid gap-6">
         {filteredFleets.length > 0 ? (
           filteredFleets.map((fleet) => (
-            <FleetCard
+            <div
               key={fleet.id}
-              fleet={fleet}
-              waterAnalysis={fleet.waterAnalysis}
-              showWaterAnalysis={true}
-              isExpanded={expandedFleets.has(fleet.id)}
-              onToggleExpansion={() => toggleFleetExpansion(fleet.id)}
-            />
+              className={`transition-all duration-1000 ${
+                newlyAddedFleetId === fleet.id 
+                  ? "ring-2 ring-green-500 ring-opacity-50 bg-green-50 rounded-lg p-1 shadow-lg scale-105" 
+                  : ""
+              }`}
+            >
+              <FleetCard
+                fleet={fleet}
+                waterAnalysis={fleet.waterAnalysis}
+                showWaterAnalysis={true}
+                isExpanded={expandedFleets.has(fleet.id)}
+                onToggleExpansion={() => toggleFleetExpansion(fleet.id)}
+              />
+            </div>
           ))
         ) : (
           <div className="text-center py-12">
