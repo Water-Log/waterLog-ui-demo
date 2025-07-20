@@ -4,6 +4,7 @@ import { ShipCard } from "@/components/ship-card"
 import { ships as initialShips } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
 import { 
   Select,
   SelectContent,
@@ -124,7 +125,7 @@ export default function ShipsPage() {
             <Ship className="h-8 w-8 text-blue-600" />
             Fleet Management
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             Manage your fleet of {ships.length} vessels
           </p>
         </div>
@@ -133,9 +134,9 @@ export default function ShipsPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-gray-50 rounded-lg">
+      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted/50 rounded-lg">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search ships by name, type, or captain..."
             value={searchTerm}
@@ -178,28 +179,36 @@ export default function ShipsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-blue-600">{ships.length}</div>
-          <div className="text-sm text-gray-600">Total Ships</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-green-600">
-            {ships.filter(s => s.status === "Active").length}
-          </div>
-          <div className="text-sm text-gray-600">Active</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-blue-600">
-            {ships.filter(s => s.status === "In Transit").length}
-          </div>
-          <div className="text-sm text-gray-600">In Transit</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-yellow-600">
-            {ships.filter(s => s.status === "Maintenance").length}
-          </div>
-          <div className="text-sm text-gray-600">Maintenance</div>
-        </div>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-blue-600">{ships.length}</div>
+            <div className="text-sm text-muted-foreground">Total Ships</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-green-600">
+              {ships.filter(s => s.status === "Active").length}
+            </div>
+            <div className="text-sm text-muted-foreground">Active</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-blue-600">
+              {ships.filter(s => s.status === "In Transit").length}
+            </div>
+            <div className="text-sm text-muted-foreground">In Transit</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-yellow-600">
+              {ships.filter(s => s.status === "Maintenance").length}
+            </div>
+            <div className="text-sm text-muted-foreground">Maintenance</div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Ships Grid */}
@@ -209,7 +218,7 @@ export default function ShipsPage() {
             key={ship.id}
             className={`transition-all duration-1000 ${
               newlyAddedShipId === ship.id 
-                ? "ring-2 ring-green-500 ring-opacity-50 bg-green-50 rounded-lg p-1 shadow-lg scale-105" 
+                ? "ring-2 ring-green-500 ring-opacity-50 bg-green-500/10 dark:bg-green-400/10 rounded-lg p-1 shadow-lg scale-105" 
                 : ""
             }`}
           >
@@ -221,9 +230,9 @@ export default function ShipsPage() {
       {/* No results */}
       {filteredShips.length === 0 && (
         <div className="text-center py-12">
-          <Ship className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No ships found</h3>
-          <p className="text-gray-600">
+          <Ship className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium mb-2">No ships found</h3>
+          <p className="text-muted-foreground">
             Try adjusting your search criteria or filters.
           </p>
         </div>
