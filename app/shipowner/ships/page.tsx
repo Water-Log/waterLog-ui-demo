@@ -1,7 +1,7 @@
 "use client"
 
 import { ShipCard } from "@/components/ship-card"
-import { ships } from "@/lib/mock-data"
+import { ships as initialShips } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { 
@@ -11,18 +11,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { AddShipModal } from "@/components/ships/add-ship-modal"
 import { 
-  Plus, 
   Search, 
   Filter,
   Ship,
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+interface Ship {
+  id: string
+  name: string
+  type: string
+  imo: string
+  flag: string
+  status: string
+  location: string
+  capacity: string
+  captain: string
+  yearBuilt: number
+  lastInspection: string
+  nextMaintenance: string
+  image: string
+  fleetId: string
+  technicianId: string
+}
+
+interface NewShipForm {
+  name: string
+  type: string
+  imo: string
+  flag: string
+  status: string
+  location: string
+  capacity: string
+  captain: string
+  yearBuilt: string
+}
 
 export default function ShipsPage() {
+  const [ships, setShips] = useState<Ship[]>(initialShips)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
+  const [newlyAddedShipId, setNewlyAddedShipId] = useState<string | null>(null)
 
   const filteredShips = ships.filter(ship => {
     const matchesSearch = ship.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,6 +70,51 @@ export default function ShipsPage() {
   const uniqueTypes = [...new Set(ships.map(ship => ship.type))]
   const uniqueStatuses = [...new Set(ships.map(ship => ship.status))]
 
+  // Generate a unique ID for new ships
+  const generateShipId = () => {
+    const maxId = Math.max(...ships.map(ship => parseInt(ship.id))) || 0
+    return (maxId + 1).toString()
+  }
+
+  const handleShipAdd = (shipData: NewShipForm) => {
+    // Create new ship object with all required fields
+    const newShip: Ship = {
+      id: generateShipId(),
+      name: shipData.name,
+      type: shipData.type,
+      imo: shipData.imo,
+      flag: shipData.flag || "Panama",
+      status: shipData.status || "Active",
+      location: shipData.location || "Port",
+      capacity: shipData.capacity || "N/A",
+      captain: shipData.captain,
+      yearBuilt: parseInt(shipData.yearBuilt) || new Date().getFullYear(),
+      lastInspection: new Date().toISOString().split('T')[0], // Today's date
+      nextMaintenance: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 90 days from now
+      image: "/cargo-ship.jpg", // Default image
+      fleetId: "1", // Default fleet
+      technicianId: "tech-001" // Default technician
+    }
+
+    // Add the new ship to the beginning of the list
+    setShips(prev => [newShip, ...prev])
+    
+    // Set this ship as newly added for highlighting
+    setNewlyAddedShipId(newShip.id)
+    
+    // Remove the highlight after 3 seconds
+    setTimeout(() => {
+      setNewlyAddedShipId(null)
+    }, 3000)
+
+    console.log("New ship added:", newShip)
+  }
+
+  // Clear highlight when filters change
+  useEffect(() => {
+    setNewlyAddedShipId(null)
+  }, [searchTerm, statusFilter, typeFilter])
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -51,10 +128,8 @@ export default function ShipsPage() {
             Manage your fleet of {ships.length} vessels
           </p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="h-4 w-4 mr-2" />
-          Add New Ship
-        </Button>
+        
+        <AddShipModal onShipAdd={handleShipAdd} />
       </div>
 
       {/* Filters */}
@@ -130,7 +205,16 @@ export default function ShipsPage() {
       {/* Ships Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredShips.map((ship) => (
-          <ShipCard key={ship.id} ship={ship} />
+          <div
+            key={ship.id}
+            className={`transition-all duration-1000 ${
+              newlyAddedShipId === ship.id 
+                ? "ring-2 ring-green-500 ring-opacity-50 bg-green-50 rounded-lg p-1 shadow-lg scale-105" 
+                : ""
+            }`}
+          >
+            <ShipCard ship={ship} />
+          </div>
         ))}
       </div>
 

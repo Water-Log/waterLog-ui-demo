@@ -17,10 +17,16 @@ import {
 import Image from "next/image"
 import { getCurrentUserWithCompany } from "@/lib/mock-data"
 import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 export function Header() {
   const { user, company } = getCurrentUserWithCompany()
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
@@ -41,7 +47,7 @@ export function Header() {
       <div className="flex items-center gap-2">
         <div className="flex h-12 w-auto items-center justify-center rounded">
           <Image 
-            src={theme === "dark" ? "/header-logo-dark.png" : "/header-logo-light.png"} 
+            src={mounted ? (theme === "dark" ? "/header-logo-dark.png" : "/header-logo-light.png") : "/header-logo-light.png"} 
             alt="WaterLog" 
             width={120} 
             height={48} 
