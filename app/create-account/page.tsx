@@ -37,6 +37,9 @@ export default function RegisterPage() {
   const handleNext = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
+    } else {
+      // TODO: Implement the logic to create the account
+      console.log("Account created")
     }
   }
   
@@ -304,8 +307,7 @@ export default function RegisterPage() {
                 (currentStep === 1 && (!companyName || !companyEmail)) ||
                 (currentStep === 2 && !selectedCountry) ||
                 (currentStep === 3 && (!taxNumber || !billingAddress)) ||
-                (currentStep === 4 && (!email || !password || !fullName)) ||
-                currentStep === totalSteps
+                (currentStep === 4 && (!email || !password || !fullName))
               }
               className="bg-green-500 hover:bg-green-600 text-white"
             >
