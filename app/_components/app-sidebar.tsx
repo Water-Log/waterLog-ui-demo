@@ -140,24 +140,9 @@ export function DesktopSidebar() {
       icon: Users,
     },
     {
-      title: "Analytics",
-      url: "/shipowner/analytics",
-      icon: BarChart3,
-    },
-    {
-      title: "Schedules",
-      url: "/shipowner/schedules",
-      icon: Calendar,
-    },
-    {
       title: "Reports",
       url: "/shipowner/reports",
       icon: FileText,
-    },
-    {
-      title: "Tracking",
-      url: "/shipowner/tracking",
-      icon: MapPin,
     },
   ]
 
