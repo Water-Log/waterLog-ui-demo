@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -24,15 +25,20 @@ import Link from "next/link"
 import { fleets, ships, shipOwners, waterAnalysisData, getFleetWaterAnalysisSummary } from "@/lib/mock-data"
 import { notFound } from "next/navigation"
 import { AddShipOwnerButton } from "@/components/ui/add-ship-owner-button"
+import { AssignShipOwnerModal } from "@/components/fleet/assign-ship-owner-modal"
 
 interface FleetDetailPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function FleetDetailPage({ params }: FleetDetailPageProps) {
-  const fleet = fleets.find(f => f.id === params.id)
+  const unwrappedParams = React.use(params)
+  const fleet = fleets.find(f => f.id === unwrappedParams.id)
+  
+  // Modal state
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
   
   if (!fleet) {
     notFound()
@@ -49,7 +55,7 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
       case "Good":
         return "default"
       case "Attention":
-        return "secondary"
+        return "secondary" 
       case "Critical":
         return "destructive"
       default:
@@ -57,16 +63,63 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
     }
   }
 
+  const getStatusColors = (status: string) => {
+    switch (status) {
+      case "Good":
+        return {
+          bg: "bg-green-50 dark:bg-green-950/50",
+          border: "border-green-200 dark:border-green-800",
+          text: "text-green-800 dark:text-green-200",
+          badge: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 hover:bg-green-200 dark:hover:bg-green-800"
+        }
+      case "Attention":
+        return {
+          bg: "bg-yellow-50 dark:bg-yellow-950/50", 
+          border: "border-yellow-200 dark:border-yellow-800",
+          text: "text-yellow-800 dark:text-yellow-200",
+          badge: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 hover:bg-yellow-200 dark:hover:bg-yellow-800"
+        }
+      case "Critical":
+        return {
+          bg: "bg-red-50 dark:bg-red-950/50",
+          border: "border-red-200 dark:border-red-800", 
+          text: "text-red-800 dark:text-red-200",
+          badge: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100 hover:bg-red-200 dark:hover:bg-red-800"
+        }
+      case "Active":
+        return {
+          bg: "bg-blue-50 dark:bg-blue-950/50",
+          border: "border-blue-200 dark:border-blue-800",
+          text: "text-blue-800 dark:text-blue-200", 
+          badge: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100 hover:bg-blue-200 dark:hover:bg-blue-800"
+        }
+      case "Maintenance":
+        return {
+          bg: "bg-orange-50 dark:bg-orange-950/50",
+          border: "border-orange-200 dark:border-orange-800",
+          text: "text-orange-800 dark:text-orange-200",
+          badge: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 hover:bg-orange-200 dark:hover:bg-orange-800"
+        }
+      default:
+        return {
+          bg: "bg-gray-50 dark:bg-gray-950/50",
+          border: "border-gray-200 dark:border-gray-800",
+          text: "text-gray-800 dark:text-gray-200",
+          badge: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-800"
+        }
+    }
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "Good":
-        return <CheckCircle className="h-4 w-4 text-green-600" />
+        return <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
       case "Attention":
-        return <Clock className="h-4 w-4 text-yellow-600" />
+        return <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
       case "Critical":
-        return <AlertTriangle className="h-4 w-4 text-red-600" />
+        return <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400" />
       default:
-        return <Minus className="h-4 w-4 text-gray-600" />
+        return <Minus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
     }
   }
 
@@ -92,28 +145,59 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
   }
 
   const handleAssignShipOwner = () => {
-    // TODO: Implement ship owner assignment logic
-    console.log(`Assign ship owner to fleet: ${fleet.id}`)
-    // This could open a modal with available ship owners
+    setIsAssignModalOpen(true)
+  }
+
+  const handleOwnerAssignment = (selectedOwnerIds: string[]) => {
+    // In a real application, this would make an API call to assign ship owners
+    console.log(`Assigning ship owners ${selectedOwnerIds.join(', ')} to fleet ${fleet.id}`)
+    
+    // For now, we'll just log the assignment
+    // In a real app, you would update the database and refresh the data
+    selectedOwnerIds.forEach(ownerId => {
+      const owner = shipOwners.find(o => o.id === ownerId)
+      if (owner) {
+        console.log(`Assigned ${owner.name} to fleet ${fleet.name}`)
+      }
+    })
+    
+    // Show success message (you could use a toast notification here)
+    alert(`Successfully assigned ${selectedOwnerIds.length} ship owner${selectedOwnerIds.length > 1 ? 's' : ''} to ${fleet.name}`)
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/manager/fleets">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Fleets
-          </Link>
-        </Button>
-        <Separator orientation="vertical" className="h-6" />
-        <div className="flex items-center gap-2">
-          <Building2 className="h-6 w-6" />
-          <h1 className="text-3xl font-bold tracking-tight">{fleet.name}</h1>
-          <Badge variant={getStatusBadgeVariant(waterAnalysis.overallStatus)}>
-            {waterAnalysis.overallStatus}
-          </Badge>
+      <div className="space-y-4">
+        {/* Back Button */}
+        <div>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/manager/fleets">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Fleets
+            </Link>
+          </Button>
+        </div>
+        
+        {/* Title Section */}
+        <div className={`p-6 rounded-lg border-2 ${getStatusColors(waterAnalysis.overallStatus).bg} ${getStatusColors(waterAnalysis.overallStatus).border}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-lg ${getStatusColors(waterAnalysis.overallStatus).badge}`}>
+                <Building2 className="h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">{fleet.name}</h1>
+                <p className="text-sm text-muted-foreground mt-1">{fleet.description}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {getStatusIcon(waterAnalysis.overallStatus)}
+              <Badge className={getStatusColors(waterAnalysis.overallStatus).badge}>
+                {waterAnalysis.overallStatus}
+              </Badge>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -143,7 +227,7 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Status:</span>
-                <Badge variant={fleet.status === 'Active' ? 'default' : 'secondary'}>
+                <Badge className={getStatusColors(fleet.status).badge}>
                   {fleet.status}
                 </Badge>
               </div>
@@ -217,52 +301,52 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="p-4 rounded-lg border border-border bg-background">
+            <div className="p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/50">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Nitrite</span>
+                <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Nitrite</span>
                 {waterAnalysis.averageAnalyses.nitrite ? 
                   getAnalysisStatus(waterAnalysis.averageAnalyses.nitrite, "nitrite").icon : 
-                  <Minus className="h-3 w-3 text-gray-600" />
+                  <Minus className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                 }
               </div>
-              <p className="text-2xl font-bold">{waterAnalysis.averageAnalyses.nitrite || 0} ppm</p>
-              <p className="text-xs text-muted-foreground">Target: 1000-2400 ppm</p>
+              <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{waterAnalysis.averageAnalyses.nitrite || 0} ppm</p>
+              <p className="text-xs text-blue-700 dark:text-blue-300">Target: 1000-2400 ppm</p>
             </div>
 
-            <div className="p-4 rounded-lg border border-border bg-background">
+            <div className="p-4 rounded-lg border-2 border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/50">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Chloride</span>
+                <span className="text-sm font-medium text-purple-900 dark:text-purple-100">Chloride</span>
                 {waterAnalysis.averageAnalyses.chloride ? 
                   getAnalysisStatus(waterAnalysis.averageAnalyses.chloride, "chloride").icon : 
-                  <Minus className="h-3 w-3 text-gray-600" />
+                  <Minus className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                 }
               </div>
-              <p className="text-2xl font-bold">{waterAnalysis.averageAnalyses.chloride || 0} ppm</p>
-              <p className="text-xs text-muted-foreground">Max: 50 ppm</p>
+              <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{waterAnalysis.averageAnalyses.chloride || 0} ppm</p>
+              <p className="text-xs text-purple-700 dark:text-purple-300">Max: 50 ppm</p>
             </div>
 
-            <div className="p-4 rounded-lg border border-border bg-background">
+            <div className="p-4 rounded-lg border-2 border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/50">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">pH Level</span>
+                <span className="text-sm font-medium text-indigo-900 dark:text-indigo-100">pH Level</span>
                 {waterAnalysis.averageAnalyses.pH ? 
                   getAnalysisStatus(waterAnalysis.averageAnalyses.pH, "pH").icon : 
-                  <Minus className="h-3 w-3 text-gray-600" />
+                  <Minus className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                 }
               </div>
-              <p className="text-2xl font-bold">{waterAnalysis.averageAnalyses.pH || 0}</p>
-              <p className="text-xs text-muted-foreground">Target: 8.3-10</p>
+              <p className="text-2xl font-bold text-indigo-900 dark:text-indigo-100">{waterAnalysis.averageAnalyses.pH || 0}</p>
+              <p className="text-xs text-indigo-700 dark:text-indigo-300">Target: 8.3-10</p>
             </div>
 
-            <div className="p-4 rounded-lg border border-border bg-background">
+            <div className="p-4 rounded-lg border-2 border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-950/50">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Total Hardness</span>
+                <span className="text-sm font-medium text-teal-900 dark:text-teal-100">Total Hardness</span>
                 {waterAnalysis.averageAnalyses.totalHardness ? 
                   getAnalysisStatus(waterAnalysis.averageAnalyses.totalHardness, "totalHardness").icon : 
-                  <Minus className="h-3 w-3 text-gray-600" />
+                  <Minus className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                 }
               </div>
-              <p className="text-2xl font-bold">{waterAnalysis.averageAnalyses.totalHardness || 0} ppm</p>
-              <p className="text-xs text-muted-foreground">Max: 180 ppm CaCO3</p>
+              <p className="text-2xl font-bold text-teal-900 dark:text-teal-100">{waterAnalysis.averageAnalyses.totalHardness || 0} ppm</p>
+              <p className="text-xs text-teal-700 dark:text-teal-300">Max: 180 ppm CaCO3</p>
             </div>
           </div>
         </CardContent>
@@ -288,13 +372,13 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
           {fleetOwners.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {fleetOwners.map((owner) => (
-                <div key={owner.id} className="p-4 rounded-lg border border-border">
+                <div key={owner.id} className={`p-4 rounded-lg border-2 ${getStatusColors(owner.status).bg} ${getStatusColors(owner.status).border}`}>
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <h4 className="font-medium">{owner.name}</h4>
                       <p className="text-sm text-muted-foreground">{owner.specialization}</p>
                     </div>
-                    <Badge variant="outline">{owner.status}</Badge>
+                    <Badge className={getStatusColors(owner.status).badge}>{owner.status}</Badge>
                   </div>
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <p>Experience: {owner.experience}</p>
@@ -329,8 +413,9 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
           <div className="grid gap-4">
             {fleetShips.map((ship) => {
               const shipWaterData = waterAnalysisData[ship.id as keyof typeof waterAnalysisData]
+              const shipStatusColor = shipWaterData ? getStatusColors(shipWaterData.currentStatus) : getStatusColors(ship.status)
               return (
-                <div key={ship.id} className="p-4 rounded-lg border border-border">
+                <div key={ship.id} className={`p-4 rounded-lg border-2 ${shipStatusColor.bg} ${shipStatusColor.border}`}>
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h4 className="font-medium text-lg">{ship.name}</h4>
@@ -342,13 +427,13 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
                       </div>
                     </div>
                     <div className="text-right">
-                      <Badge variant={ship.status === 'Active' ? 'default' : ship.status === 'Maintenance' ? 'secondary' : 'outline'}>
+                      <Badge className={getStatusColors(ship.status).badge}>
                         {ship.status}
                       </Badge>
                       {shipWaterData && (
                         <div className="flex items-center gap-2 mt-2">
                           {getStatusIcon(shipWaterData.currentStatus)}
-                          <Badge variant={getStatusBadgeVariant(shipWaterData.currentStatus)} className="text-xs">
+                          <Badge className={`${getStatusColors(shipWaterData.currentStatus).badge} text-xs`}>
                             {shipWaterData.currentStatus}
                           </Badge>
                         </div>
@@ -367,40 +452,40 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
                         </span>
                       </h5>
                       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                        <div className="p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium">Nitrite</span>
+                            <span className="text-xs font-medium text-blue-900 dark:text-blue-100">Nitrite</span>
                             {getAnalysisStatus(shipWaterData.analyses.nitrite.value, "nitrite").icon}
                           </div>
-                          <p className="text-lg font-bold">{shipWaterData.analyses.nitrite.value} ppm</p>
-                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.nitrite.target}</p>
+                          <p className="text-lg font-bold text-blue-900 dark:text-blue-100">{shipWaterData.analyses.nitrite.value} ppm</p>
+                          <p className="text-xs text-blue-700 dark:text-blue-300">Target: {shipWaterData.analyses.nitrite.target}</p>
                         </div>
 
-                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                        <div className="p-3 rounded-lg border-2 border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/30">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium">Chloride</span>
+                            <span className="text-xs font-medium text-purple-900 dark:text-purple-100">Chloride</span>
                             {getAnalysisStatus(shipWaterData.analyses.chloride.value, "chloride").icon}
                           </div>
-                          <p className="text-lg font-bold">{shipWaterData.analyses.chloride.value} ppm</p>
-                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.chloride.target}</p>
+                          <p className="text-lg font-bold text-purple-900 dark:text-purple-100">{shipWaterData.analyses.chloride.value} ppm</p>
+                          <p className="text-xs text-purple-700 dark:text-purple-300">Target: {shipWaterData.analyses.chloride.target}</p>
                         </div>
 
-                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                        <div className="p-3 rounded-lg border-2 border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/30">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium">pH Level</span>
+                            <span className="text-xs font-medium text-indigo-900 dark:text-indigo-100">pH Level</span>
                             {getAnalysisStatus(shipWaterData.analyses.pH.value, "pH").icon}
                           </div>
-                          <p className="text-lg font-bold">{shipWaterData.analyses.pH.value}</p>
-                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.pH.target}</p>
+                          <p className="text-lg font-bold text-indigo-900 dark:text-indigo-100">{shipWaterData.analyses.pH.value}</p>
+                          <p className="text-xs text-indigo-700 dark:text-indigo-300">Target: {shipWaterData.analyses.pH.target}</p>
                         </div>
 
-                        <div className="p-3 rounded-lg border border-border bg-background/50">
+                        <div className="p-3 rounded-lg border-2 border-teal-200 dark:border-teal-800 bg-teal-50/50 dark:bg-teal-950/30">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium">Total Hardness</span>
+                            <span className="text-xs font-medium text-teal-900 dark:text-teal-100">Total Hardness</span>
                             {getAnalysisStatus(shipWaterData.analyses.totalHardness.value, "totalHardness").icon}
                           </div>
-                          <p className="text-lg font-bold">{shipWaterData.analyses.totalHardness.value} ppm</p>
-                          <p className="text-xs text-muted-foreground">Target: {shipWaterData.analyses.totalHardness.target}</p>
+                          <p className="text-lg font-bold text-teal-900 dark:text-teal-100">{shipWaterData.analyses.totalHardness.value} ppm</p>
+                          <p className="text-xs text-teal-700 dark:text-teal-300">Target: {shipWaterData.analyses.totalHardness.target}</p>
                         </div>
                       </div>
 
@@ -447,6 +532,16 @@ export default function FleetDetailPage({ params }: FleetDetailPageProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Assign Ship Owner Modal */}
+      <AssignShipOwnerModal
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        onAssign={handleOwnerAssignment}
+        fleetId={fleet.id}
+        fleetName={fleet.name}
+        currentlyAssignedOwnerIds={fleetOwners.map(owner => owner.id)}
+      />
     </div>
   )
 }
