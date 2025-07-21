@@ -25,33 +25,35 @@ import { countries } from "@/lib/mock-data"
 // Technician statuses for select options
 const technicianStatuses = ["Active", "On Leave", "Inactive"]
 
+export interface TechnicianFormData {
+  fullName: string
+  phoneNumber: string
+  email: string
+  country: string
+  status: string
+}
+
 interface AddTechnicianModalProps {
   isOpen: boolean
   onClose: () => void
-  onAdd: (technicianData: {
-    fullName: string
-    phoneNumber: string
-    email: string
-    country: string
-    status: string
-  }) => void
+  onAdd: (technicianData: TechnicianFormData) => void
 }
 
 export function AddTechnicianModal({ isOpen, onClose, onAdd }: AddTechnicianModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TechnicianFormData>({
     fullName: "",
     phoneNumber: "",
     email: "",
     country: "",
-    status: "Active", // Default status
+    status: "Active" // Default status
   })
   
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<Record<keyof TechnicianFormData, string>>({
     fullName: "",
     phoneNumber: "",
     email: "",
     country: "",
-    status: "",
+    status: ""
   })
 
   const handleInputChange = (field: string, value: string) => {
@@ -71,7 +73,7 @@ export function AddTechnicianModal({ isOpen, onClose, onAdd }: AddTechnicianModa
 
   const validateForm = () => {
     let isValid = true
-    const newErrors = {
+    const newErrors: Record<keyof TechnicianFormData, string> = {
       fullName: "",
       phoneNumber: "",
       email: "",
@@ -132,14 +134,14 @@ export function AddTechnicianModal({ isOpen, onClose, onAdd }: AddTechnicianModa
       phoneNumber: "",
       email: "",
       country: "",
-      status: "Active",
+      status: "Active"
     })
     setErrors({
       fullName: "",
       phoneNumber: "",
       email: "",
       country: "",
-      status: "",
+      status: ""
     })
     onClose()
   }
@@ -224,6 +226,8 @@ export function AddTechnicianModal({ isOpen, onClose, onAdd }: AddTechnicianModa
               <p className="text-xs text-red-500">{errors.country}</p>
             )}
           </div>
+
+
 
           {/* Status */}
           <div className="space-y-2">

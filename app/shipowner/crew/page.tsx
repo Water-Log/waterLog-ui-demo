@@ -6,13 +6,14 @@ import {
   TechnicianFilters, 
   TechnicianTable, 
   TechnicianHistoryModal,
+  AddTechnicianModal,
   Technician,
   WaterAnalysisData,
-  ChemicalAdditionData
+  ChemicalAdditionData,
+  TechnicianFormData
 } from "@/components/crew"
 import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
-import { AddTechnicianModal } from "@/components/crew/add-technician-modal"
+import { PlusCircle, UserPlus } from "lucide-react"
 
 // Assume we're logged in as the first ship owner
 const currentShipOwnerId = "owner-1"
@@ -138,19 +139,12 @@ export default function CrewPage() {
     return result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }
 
-  const handleAddTechnician = (technicianData: {
-    fullName: string
-    phoneNumber: string
-    email: string
-    country: string
-    status: string
-    department: string
-  }) => {
-    // In a real app, this would send data to an API
-    console.log("Adding new technician:", technicianData)
-    
-    // For now, just show an alert to simulate success
-    alert(`Technician ${technicianData.fullName} added successfully!`)
+  // Handle adding a new technician
+  const handleAddTechnician = (technicianData: TechnicianFormData) => {
+    console.log("Adding technician:", technicianData);
+    // In a real application, this would send a request to the API
+    // For now, just log the new technician data
+    alert(`New technician ${technicianData.fullName} added successfully`);
   }
 
   return (
@@ -163,11 +157,10 @@ export default function CrewPage() {
           </p>
         </div>
         <Button 
-          onClick={() => setAddTechnicianModalOpen(true)} 
-          className="flex items-center gap-2"
+          onClick={() => setAddTechnicianModalOpen(true)}
+          className="self-start"
         >
-          <PlusCircle className="h-4 w-4" />
-          Add Technician
+          <UserPlus className="mr-2 h-4 w-4" /> Add Technician
         </Button>
       </div>
 
@@ -202,7 +195,7 @@ export default function CrewPage() {
         getWaterAnalysisForTechnician={getWaterAnalysisForTechnician}
         getChemicalAdditionsForTechnician={getChemicalAdditionsForTechnician}
       />
-      
+
       {/* Add Technician Modal */}
       <AddTechnicianModal
         isOpen={addTechnicianModalOpen}
