@@ -68,9 +68,12 @@ const getShipTypeIcon = (type: string) => {
   }
 }
 
+import Link from "next/link"
+
 export function ShipCard({ ship }: ShipCardProps) {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
+    <Link href={`/shipowner/ships/${ship.id}`} className="block cursor-pointer">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200 hover:border-blue-300">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -131,5 +134,6 @@ export function ShipCard({ ship }: ShipCardProps) {
         </div>
       </CardContent>
     </Card>
+    </Link>
   )
 } 

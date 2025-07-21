@@ -41,20 +41,6 @@ export function CurrentWaterQualityStatusCard({ currentAnalysis }: CurrentWaterQ
             <CheckCircle className="h-5 w-5 text-green-600" />
             Current Water Quality Status
           </CardTitle>
-          <div className="flex gap-2">
-            <Link href="/technician/water-analysis">
-              <Button className="flex items-center gap-2">
-                <Beaker className="h-4 w-4" />
-                Add Analysis
-              </Button>
-            </Link>
-            <Link href="/technician/chemicals">
-              <Button variant="outline" className="flex items-center gap-2">
-                <Droplets className="h-4 w-4" />
-                Add Chemicals
-              </Button>
-            </Link>
-          </div>
         </div>
       </CardHeader>
       <CardContent>
