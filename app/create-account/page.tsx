@@ -10,7 +10,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { countries } from "@/lib/mock-data"
 import { useRouter } from "next/navigation"
-
+import { toast } from "sonner"
 // Icons
 import { Check } from "lucide-react"
 import { useLanguage, Language } from "../_providers/language"
@@ -31,6 +31,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [isSuccess, setIsSuccess] = useState(false)
   
   // NEW: language context
   const { language, setLanguage, t } = useLanguage()
@@ -64,9 +65,13 @@ export default function RegisterPage() {
           role: "MANAGER"
         })
 
-        // Account created successfully and user is logged in, redirect to manager page
+        // Show success message and redirect after delay
+        setIsSuccess(true)
+        toast.success("Account created successfully! Redirecting to login...")
         
-        router.push('/login')
+        setTimeout(() => {
+          router.push('/login')
+        }, 2000) // 2 second delay
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
@@ -188,6 +193,16 @@ export default function RegisterPage() {
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
               <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          )}
+          
+          {/* Success display */}
+          {isSuccess && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+              <div className="flex items-center space-x-2">
+                <Check className="h-5 w-5 text-green-600" />
+                <p className="text-green-600 text-sm font-medium">Account created successfully! Redirecting to login...</p>
+              </div>
             </div>
           )}
           
@@ -347,6 +362,7 @@ export default function RegisterPage() {
               onClick={handleNext}
               disabled={
                 isLoading ||
+                isSuccess ||
                 (currentStep === 1 && (!companyName || !companyEmail)) ||
                 (currentStep === 2 && (!billingAddress || !taxNumber)) ||
                 (currentStep === 3 && (
@@ -364,6 +380,11 @@ export default function RegisterPage() {
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Creating Account...</span>
+                </div>
+              ) : isSuccess ? (
+                <div className="flex items-center space-x-2">
+                  <Check className="h-4 w-4" />
+                  <span>Account Created!</span>
                 </div>
               ) : (
                 currentStep === totalSteps ? t('button.complete') : t('button.continue')
