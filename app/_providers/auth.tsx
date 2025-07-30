@@ -33,11 +33,23 @@ export interface AuthUser {
   createdAt: string;
 }
 
+interface RegisterData {
+  companyName: string;
+  companyEmail: string;
+  billingAddress: string;
+  taxNumber: string;
+  email: string;
+  password: string;
+  fullName: string;
+  phoneNumber: string;
+  role: string;
+}
+
 interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<AuthUser>;
-  register: (userData: any) => Promise<void>;
+  register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
   hasRole: (...roles: Role[]) => boolean;
   loading: boolean;
@@ -313,15 +325,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
-  const register = useCallback(async (userData: any) => {
+  const register = useCallback(async (userData: RegisterData) => {
     console.log("📝 Registration process started");
+    
+    // Validate phone number format
+    const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
+    if (!phoneRegex.test(userData.phoneNumber)) {
+      throw new Error('Phone number must be in a valid format (e.g., +1 (555) 123-4567)');
+    }
+    
+    console.log("📋 Registration data:", {
+      companyName: userData.companyName,
+      companyEmail: userData.companyEmail,
+      email: userData.email,
+      fullName: userData.fullName,
+      role: userData.role,
+      phoneNumber: userData.phoneNumber
+    });
     setLoading(true);
     setError(null);
     try {
       const apiUrl = getApiUrl();
       console.log("📡 Registering with:", `${apiUrl}/auth/signup`);
       
-      const res = await fetch(`${apiUrl}/auth/signup`, {
+      const res: Response = await fetch(`${apiUrl}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -331,63 +358,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log("📡 Registration response status:", res.status);
 
       if (!res.ok) {
-        const data = await res.json();
+        const data: any = await res.json();
         console.error("❌ Registration failed:", data);
         throw new Error(data.message || data.error || 'Registration failed');
       }
 
-      const regData = await res.json();
+      const regData: any = await res.json();
       console.log("✅ Registration successful:", regData);
-      
-      const { accessToken: access_token } = regData;
-      
-      if (!access_token) {
-        throw new Error('No access token received from registration');
-      }
-
-      // Store token and get user details
-      console.log("🍪 Storing token and fetching user details...");
-      setToken(access_token);
-      Cookies.set(TOKEN_KEY, access_token, {
-        expires: 7,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      });
-
-      // Get user details using /users/me
-      const userRes = await fetch(`${apiUrl}/users/me`, {
-        headers: {
-          'Authorization': `Bearer ${access_token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!userRes.ok) {
-        clearSession();
-        throw new Error('Failed to fetch user details after registration');
-      }
-
-      const userData = await userRes.json();
-      const mappedRole = ROLE_MAPPING[userData.role] || Role.Technician;
-      
-      const user: AuthUser = {
-        userId: userData.userId,
-        email: userData.email,
-        fullName: userData.fullName,
-        role: mappedRole,
-        active: userData.active,
-        companyId: userData.companyId,
-        createdAt: userData.createdAt,
-      };
-
-      // Set user and token
-      setUser(user);
-      storeSession({ token: access_token, user });
-      console.log("✅ Registration and login completed successfully!");
     } catch (err: any) {
       console.error("💥 Registration error:", err);
       setError(err.message ?? 'Unknown error');
-      throw err; // Re-throw to handle in the component
+      throw err;
     } finally {
       console.log("🏁 Registration process finished");
       setLoading(false);

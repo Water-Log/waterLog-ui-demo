@@ -20,7 +20,6 @@ export default function RegisterPage() {
   const router = useRouter()
   const { register } = useAuth()
   const [currentStep, setCurrentStep] = useState(1)
-  const [selectedCountry, setSelectedCountry] = useState("")
   const [companyName, setCompanyName] = useState("")
   const [companyEmail, setCompanyEmail] = useState("")
   const [taxNumber, setTaxNumber] = useState("")
@@ -28,6 +27,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [fullName, setFullName] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   
@@ -38,7 +39,7 @@ export default function RegisterPage() {
     { code: "tr", src: "/tr-flag.png", alt: "Turkish" },
   ]
   
-  const totalSteps = 4
+  const totalSteps = 3
   
   const handleNext = async () => {
     if (currentStep < totalSteps) {
@@ -50,19 +51,22 @@ export default function RegisterPage() {
       setError("")
       
       try {
+        console.log("📝 Starting registration with manager role...");
         await register({
           companyName,
           companyEmail,
-          selectedCountry,
-          taxNumber,
           billingAddress,
+          taxNumber,
           email,
           password,
-          fullName
+          fullName,
+          phoneNumber,
+          role: "MANAGER"
         })
 
         // Account created successfully and user is logged in, redirect to manager page
-        router.push('/manager')
+        
+        router.push('/login')
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {
@@ -144,13 +148,6 @@ export default function RegisterPage() {
                   subtitle={t('steps.3.subtitle')}
                   isActive={currentStep === 3}
                   isCompleted={currentStep > 3}
-                />
-                <StepIndicator 
-                  number={4} 
-                  title={t('steps.4.title')}
-                  subtitle={t('steps.4.subtitle')}
-                  isActive={currentStep === 4}
-                  isCompleted={currentStep > 4}
                   isLast={true}
                 />
               </div>
@@ -230,30 +227,14 @@ export default function RegisterPage() {
               
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="country">Country</Label>
-                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((country) => (
-                        <SelectItem key={country.value} value={country.value}>
-                          {country.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="billingAddress">Billing Address</Label>
+                  <Textarea 
+                    id="billingAddress" 
+                    placeholder="123 Main St, City, Country"
+                    value={billingAddress}
+                    onChange={(e) => setBillingAddress(e.target.value)}
+                  />
                 </div>
-              </div>
-            </div>
-          )}
-          
-          {currentStep === 3 && (
-            <div>
-              <h2 className="text-2xl font-bold mb-6">{t('companyTax.heading')}</h2>
-              <p className="text-gray-600 mb-8">{t('companyTax.description')}</p>
-
-              <div className="space-y-4">
                 <div>
                   <Label htmlFor="taxNumber">Tax Number</Label>
                   <Input 
@@ -263,20 +244,13 @@ export default function RegisterPage() {
                     onChange={(e) => setTaxNumber(e.target.value)}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="billingAddress">Billing Address</Label>
-                  <Textarea 
-                    id="billingAddress" 
-                    placeholder="123 Main St, Anytown, USA"
-                    value={billingAddress}
-                    onChange={(e) => setBillingAddress(e.target.value)}
-                  />
-                </div>
               </div>
             </div>
           )}
           
-          {currentStep === 4 && (
+
+          
+          {currentStep === 3 && (
             <div>
               <h2 className="text-2xl font-bold mb-6">{t('loginInfo.heading')}</h2>
               <p className="text-gray-600 mb-8">{t('loginInfo.description')}</p>
@@ -302,6 +276,26 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Input 
+                    id="phoneNumber" 
+                    type="tel"
+                    placeholder="+1 (555) 123-4567" 
+                    value={phoneNumber}
+                    onChange={(e) => {
+                      // Remove all non-digit characters except + and -
+                      const cleaned = e.target.value.replace(/[^\d+\-\(\)\s]/g, '');
+                      setPhoneNumber(cleaned);
+                    }}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Format: +1 (555) 123-4567 or +905551234567
+                  </p>
+                  {phoneNumber && !/^\+?[\d\s\-\(\)]+$/.test(phoneNumber) && (
+                    <p className="text-red-500 text-sm mt-1">Please enter a valid phone number</p>
+                  )}
+                </div>
+                <div>
                   <Label htmlFor="password">Password</Label>
                   <Input 
                     id="password" 
@@ -310,6 +304,19 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input 
+                    id="confirmPassword" 
+                    type="password"
+                    placeholder="Confirm your password" 
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  {confirmPassword && password !== confirmPassword && (
+                    <p className="text-red-500 text-sm mt-1">Passwords do not match</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -341,9 +348,15 @@ export default function RegisterPage() {
               disabled={
                 isLoading ||
                 (currentStep === 1 && (!companyName || !companyEmail)) ||
-                (currentStep === 2 && !selectedCountry) ||
-                (currentStep === 3 && (!taxNumber || !billingAddress)) ||
-                (currentStep === 4 && (!email || !password || !fullName))
+                (currentStep === 2 && (!billingAddress || !taxNumber)) ||
+                (currentStep === 3 && (
+                  !email || 
+                  !password || 
+                  !fullName || 
+                  !phoneNumber || 
+                  password !== confirmPassword ||
+                  !/^\+?[\d\s\-\(\)]+$/.test(phoneNumber)
+                ))
               }
               className="bg-green-500 hover:bg-green-600 text-white"
             >
