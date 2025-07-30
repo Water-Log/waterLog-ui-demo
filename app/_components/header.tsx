@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Search, User, Moon, Sun } from "lucide-react"
+import { Bell, Search, User, Moon, Sun, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -15,30 +15,64 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
-import { getCurrentUserWithCompany } from "@/lib/mock-data"
+import { useAuth } from "@/app/_providers/auth"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export function Header() {
-  const { user, company } = getCurrentUserWithCompany()
+  const { user, logout } = useAuth()
   const { theme, setTheme } = useTheme()
+  const router = useRouter()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  const handleLogout = () => {
+    console.log("🚪 Logout initiated by user")
+    logout()
+    console.log("✅ Logout completed, redirecting to login")
+    router.push('/login')
+  }
+
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
-      case "Manager":
+      case "manager":
         return "default"
-      case "Shipowner":
+      case "shipholder":
         return "secondary"
-      case "Technician":
+      case "technician":
         return "outline"
       default:
         return "outline"
     }
+  }
+
+  const getRoleDisplayName = (role: string) => {
+    switch (role) {
+      case "manager":
+        return "Manager"
+      case "shipholder":
+        return "Ship Owner"
+      case "technician":
+        return "Technician"
+      default:
+        return role
+    }
+  }
+
+  // Show loading or redirect if no user
+  if (!user) {
+    return (
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 relative z-50">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+          <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+        </div>
+      </header>
+    )
   }
 
   return (
@@ -91,9 +125,9 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback>
-                  <User className="h-4 w-4" />
+                  {user.fullName?.split(' ').map(n => n[0]).join('').toUpperCase() || 
+                   user.email[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -102,25 +136,31 @@ export function Header() {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-2">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium leading-none">{user.name}</p>
+                  <p className="text-sm font-medium leading-none">{user.fullName}</p>
                   <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
-                    {user.role}
+                    {getRoleDisplayName(user.role)}
                   </Badge>
                 </div>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {company?.name}
+                  {user.email}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  Company ID: {user.companyId}
                 </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem>
+              <Bell className="mr-2 h-4 w-4" />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+              <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -19,8 +19,8 @@ import { Role } from '@/schemas/role'
  */
 const roleForbidden: Record<Role, RegExp[]> = {
   [Role.Manager]: [], // managers can reach everything
-  [Role.Shipholder]: [/^\/admin/, /^\/manager/],
-  [Role.Technician]: [/^\/admin/, /^\/manager/, /^\/ship/],
+  [Role.Shipholder]: [/^\/admin/, /^\/manager/, /^\/technician/],
+  [Role.Technician]: [/^\/admin/, /^\/manager/, /^\/shipowner/],
 }
 
 /**
@@ -40,12 +40,10 @@ const PUBLIC_PATHS = [
   /^\/login/,
   /^\/create-account/,
   /^\/signup/,
-  /^\/api\/auth\/login/,
-  /^\/api\/auth\/register/,
   /^\/api\/public/, // any other public APIs
 ]
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip public paths and API routes
@@ -53,9 +51,71 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // For now, let client-side handle authentication
-  // The auth provider will handle redirects based on authentication state
-  return NextResponse.next()
+  // Get token from cookies
+  const token = request.cookies.get('auth_token')?.value
+
+  // If no token, redirect to login
+  if (!token) {
+    const loginUrl = new URL('/login', request.url)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  try {
+    // Verify token with backend using /users/me
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+    const userResponse = await fetch(`${apiUrl}/users/me`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    // If token is invalid, redirect to login
+    if (!userResponse.ok) {
+      const loginUrl = new URL('/login', request.url)
+      const response = NextResponse.redirect(loginUrl)
+      
+      // Clear invalid token
+      response.cookies.delete('auth_token')
+      response.cookies.delete('auth_user')
+      
+      return response
+    }
+
+    const userData = await userResponse.json()
+    
+    // Map backend role to frontend role for access control
+    const BACKEND_TO_FRONTEND_ROLE: Record<string, Role> = {
+      'MANAGER': Role.Manager,
+      'SHIPHOLDER': Role.Shipholder,
+      'SHIPOWNER': Role.Shipholder,
+      'TECHNICIAN': Role.Technician,
+    }
+    
+    const userRole = BACKEND_TO_FRONTEND_ROLE[userData.role] || Role.Technician
+
+    // Check role-based access
+    if (roleForbidden[userRole]) {
+      const forbidden = roleForbidden[userRole].some((pattern) => pattern.test(pathname))
+      if (forbidden) {
+        return new NextResponse('Forbidden', { status: 403 })
+      }
+    }
+
+    return NextResponse.next()
+
+  } catch (error) {
+    // If there's an error verifying with backend, redirect to login
+    console.error('Middleware auth error:', error)
+    const loginUrl = new URL('/login', request.url)
+    const response = NextResponse.redirect(loginUrl)
+    
+    // Clear potentially invalid token
+    response.cookies.delete('auth_token')
+    response.cookies.delete('auth_user')
+    
+    return response
+  }
 }
 
 /**

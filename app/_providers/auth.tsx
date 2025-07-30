@@ -8,19 +8,29 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
+import Cookies from 'js-cookie';
 
 import { Role } from '@/schemas/role';
+
+// Backend role mapping
+const ROLE_MAPPING: Record<string, Role> = {
+  'MANAGER': Role.Manager,
+  'SHIPHOLDER': Role.Shipholder,
+  'SHIPOWNER': Role.Shipholder, // Alternative naming
+  'TECHNICIAN': Role.Technician,
+};
 
 // -----------------------------
 // Types
 // -----------------------------
 export interface AuthUser {
-  id: string; // uuid
-  company: unknown; // Adjust with actual Company type when available
+  userId: number;
   email: string;
   fullName: string;
   role: Role;
   active: boolean;
+  companyId: number;
+  createdAt: string;
 }
 
 interface AuthContextValue {
@@ -37,23 +47,116 @@ interface AuthContextValue {
 // -----------------------------
 // Utilities
 // -----------------------------
-const STORAGE_KEY = 'auth';
+const TOKEN_KEY = 'auth_token';
+const USER_KEY = 'auth_user';
 
 function storeSession(data: { token: string; user: AuthUser }) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  // Store token in httpOnly-like cookie (as secure as possible on client)
+  Cookies.set(TOKEN_KEY, data.token, {
+    expires: 7, // 7 days
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  });
+  
+  // Store user data in cookie as well
+  Cookies.set(USER_KEY, JSON.stringify(data.user), {
+    expires: 7, // 7 days
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  });
 }
 
 function clearSession() {
-  localStorage.removeItem(STORAGE_KEY);
+  Cookies.remove(TOKEN_KEY);
+  Cookies.remove(USER_KEY);
 }
 
 function loadSession(): { token: string; user: AuthUser } | null {
-  if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
+    const token = Cookies.get(TOKEN_KEY);
+    const userStr = Cookies.get(USER_KEY);
+    
+    if (!token || !userStr) return null;
+    
+    const user = JSON.parse(userStr);
+    return { token, user };
   } catch {
+    return null;
+  }
+}
+
+function getApiUrl() {
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+}
+
+// Utility function to get token for API requests
+export function getAuthToken(): string | null {
+  return Cookies.get(TOKEN_KEY) || null;
+}
+
+// Utility function to make authenticated API requests
+export async function authenticatedFetch(url: string, options: RequestInit = {}) {
+  const token = getAuthToken();
+  const apiUrl = getApiUrl();
+  
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string> || {}),
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return fetch(`${apiUrl}${url}`, {
+    ...options,
+    headers,
+  });
+}
+
+// Utility function to verify user with backend
+export async function verifyUserWithBackend(): Promise<AuthUser | null> {
+  console.log("🔍 Verifying user with backend...");
+  try {
+    const response = await authenticatedFetch('/users/me');
+    console.log("📡 Verification response status:", response.status);
+    
+    if (!response.ok) {
+      if (response.status === 401) {
+        console.log("❌ Token is invalid, clearing session");
+        // Token is invalid, clear session
+        clearSession();
+      } else {
+        console.error("❌ Verification failed with status:", response.status);
+      }
+      return null;
+    }
+    
+    const userData = await response.json();
+    console.log("✅ User verification successful:", {
+      userId: userData.userId,
+      email: userData.email,
+      role: userData.role
+    });
+    
+    // Map backend role to frontend role
+    const mappedRole = ROLE_MAPPING[userData.role] || Role.Technician;
+    console.log("🎭 Role mapping in verification:", { 
+      backendRole: userData.role, 
+      frontendRole: mappedRole 
+    });
+    
+    return {
+      userId: userData.userId,
+      email: userData.email,
+      fullName: userData.fullName,
+      role: mappedRole,
+      active: userData.active,
+      companyId: userData.companyId,
+      createdAt: userData.createdAt,
+    };
+  } catch (error) {
+    console.error('💥 Error verifying user:', error);
     return null;
   }
 }
@@ -73,83 +176,230 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load session on mount
+  // Load session on mount and verify with backend
   useEffect(() => {
-    const session = loadSession();
-    if (session) {
-      setUser(session.user);
-      setToken(session.token);
-    }
-    setLoading(false);
+    const initializeAuth = async () => {
+      console.log("🔄 Initializing authentication...");
+      const session = loadSession();
+      if (session) {
+        console.log("📦 Found existing session, verifying with backend...");
+        // Verify session with backend
+        const verifiedUser = await verifyUserWithBackend();
+        if (verifiedUser) {
+          console.log("✅ Session verified successfully");
+          setUser(verifiedUser);
+          setToken(session.token);
+          // Update stored session with verified user data
+          storeSession({ token: session.token, user: verifiedUser });
+        } else {
+          console.log("❌ Session verification failed, clearing session");
+          // Clear invalid session
+          clearSession();
+        }
+      } else {
+        console.log("📭 No existing session found");
+      }
+      console.log("🏁 Authentication initialization completed");
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
+    console.log("🚀 Login process started for:", email);
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/auth/login', {
+      const apiUrl = getApiUrl();
+      console.log("📍 API URL:", apiUrl);
+      
+      // Step 1: Authenticate and get token
+      console.log("🔐 Step 1: Authenticating with /auth/signin...");
+      const authRes = await fetch(`${apiUrl}/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
+      console.log("📡 Auth Response Status:", authRes.status);
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Login failed');
+      if (!authRes.ok) {
+        const data = await authRes.json();
+        console.error("❌ Authentication failed:", data);
+        throw new Error(data.message || data.error || 'Login failed');
       }
 
-      const { token: receivedToken, user: receivedUser } = await res.json();
-      setUser(receivedUser);
-      setToken(receivedToken);
-      storeSession({ token: receivedToken, user: receivedUser });
+      const authData = await authRes.json();
+      console.log("✅ Authentication successful:", { 
+        hasToken: !!authData.accessToken,
+        tokenLength: authData.accessToken?.length || 0,
+        message: authData.message,
+        fullResponse: authData
+      });
       
-      // Return the user data for role-based redirects
-      return receivedUser;
+      const { accessToken: access_token } = authData;
+      
+      // Step 2: Store token temporarily
+      console.log("🍪 Step 2: Storing token in cookies...");
+      setToken(access_token);
+      Cookies.set(TOKEN_KEY, access_token, {
+        expires: 7,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      });
+      console.log("✅ Token stored successfully");
+
+      // Step 3: Get user details using /users/me
+      console.log("👤 Step 3: Fetching user details from /users/me...");
+      const userRes = await fetch(`${apiUrl}/users/me`, {
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("📡 User Response Status:", userRes.status);
+
+      if (!userRes.ok) {
+        console.error("❌ Failed to fetch user details:", userRes.status);
+        // Clear the token if user fetch fails
+        clearSession();
+        throw new Error('Failed to fetch user details');
+      }
+
+      const userData = await userRes.json();
+      console.log("👤 User data received:", {
+        userId: userData.userId,
+        email: userData.email,
+        fullName: userData.fullName,
+        role: userData.role,
+        active: userData.active
+      });
+      
+      // Step 4: Map backend role to frontend role
+      console.log("🔄 Step 4: Mapping backend role to frontend role...");
+      const mappedRole = ROLE_MAPPING[userData.role] || Role.Technician;
+      console.log("🎭 Role mapping:", { 
+        backendRole: userData.role, 
+        frontendRole: mappedRole 
+      });
+      
+      const user: AuthUser = {
+        userId: userData.userId,
+        email: userData.email,
+        fullName: userData.fullName,
+        role: mappedRole,
+        active: userData.active,
+        companyId: userData.companyId,
+        createdAt: userData.createdAt,
+      };
+
+      // Step 5: Store complete session
+      console.log("💾 Step 5: Storing complete session...");
+      setUser(user);
+      storeSession({ token: access_token, user });
+      console.log("✅ Session stored successfully");
+      console.log("🎉 Login process completed successfully!");
+      
+      return user;
     } catch (err: any) {
+      console.error("💥 Login error:", err);
       setError(err.message ?? 'Unknown error');
       throw err;
     } finally {
+      console.log("🏁 Login process finished");
       setLoading(false);
     }
   }, []);
 
   const register = useCallback(async (userData: any) => {
+    console.log("📝 Registration process started");
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/auth/register', {
+      const apiUrl = getApiUrl();
+      console.log("📡 Registering with:", `${apiUrl}/auth/signup`);
+      
+      const res = await fetch(`${apiUrl}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       });
+      console.log("📡 Registration response status:", res.status);
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Registration failed');
+        console.error("❌ Registration failed:", data);
+        throw new Error(data.message || data.error || 'Registration failed');
       }
 
-      const { token: receivedToken, user: receivedUser } = await res.json();
+      const regData = await res.json();
+      console.log("✅ Registration successful:", regData);
       
-      // Set user and token directly from registration response
-      setUser(receivedUser);
-      setToken(receivedToken);
-      storeSession({ token: receivedToken, user: receivedUser });
+      const { accessToken: access_token } = regData;
+      
+      if (!access_token) {
+        throw new Error('No access token received from registration');
+      }
+
+      // Store token and get user details
+      console.log("🍪 Storing token and fetching user details...");
+      setToken(access_token);
+      Cookies.set(TOKEN_KEY, access_token, {
+        expires: 7,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      });
+
+      // Get user details using /users/me
+      const userRes = await fetch(`${apiUrl}/users/me`, {
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!userRes.ok) {
+        clearSession();
+        throw new Error('Failed to fetch user details after registration');
+      }
+
+      const userData = await userRes.json();
+      const mappedRole = ROLE_MAPPING[userData.role] || Role.Technician;
+      
+      const user: AuthUser = {
+        userId: userData.userId,
+        email: userData.email,
+        fullName: userData.fullName,
+        role: mappedRole,
+        active: userData.active,
+        companyId: userData.companyId,
+        createdAt: userData.createdAt,
+      };
+
+      // Set user and token
+      setUser(user);
+      storeSession({ token: access_token, user });
+      console.log("✅ Registration and login completed successfully!");
     } catch (err: any) {
+      console.error("💥 Registration error:", err);
       setError(err.message ?? 'Unknown error');
       throw err; // Re-throw to handle in the component
     } finally {
+      console.log("🏁 Registration process finished");
       setLoading(false);
     }
-  }, [login]);
+  }, []);
 
   const logout = useCallback(() => {
+    console.log("🚪 Logging out user...");
     setUser(null);
     setToken(null);
     clearSession();
+    console.log("✅ User logged out successfully");
   }, []);
 
   const hasRole = useCallback(
